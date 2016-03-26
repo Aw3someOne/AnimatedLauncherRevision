@@ -17,55 +17,72 @@ import net.miginfocom.swing.MigLayout;
 
 public class Main extends JFrame {
 
-    public static Ini config;
+    public static final Ini CONFIG;
+    public static final Ini.Section SYSTEM;
+    public static final int HEADER_WIDTH;
+    public static final int HEADER_HEIGHT;
+    public static final int BUTTON_WIDTH;
+    public static final int BUTTON_HEIGHT;
+    public static final int HEADER_TEXT_INDENT;
+    public static final int TEXT_INDENT;
+    public static final int TEXT_INDENT_STEPS;
+    public static final int TEXT_INDENT_DURATION;
+    public static final int TEXT_INDENT_SLEEP;
+    public static final Color CLEAR = new Color(0,0,0,0);
+    static {
+        FileReader fr = null;
+        Ini ini = null;
+            try {
+                fr = new FileReader("config.ini");
+                ini = new Ini(fr);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            CONFIG = ini;
+            SYSTEM = CONFIG.get("System");
+            HEADER_WIDTH = Integer.parseInt(SYSTEM.get("headerWidth"));
+            HEADER_HEIGHT = Integer.parseInt(SYSTEM.get("headerHeight"));
+            BUTTON_WIDTH = Integer.parseInt(SYSTEM.get("buttonWidth"));
+            BUTTON_HEIGHT = Integer.parseInt(SYSTEM.get("buttonHeight"));
+            HEADER_TEXT_INDENT = Integer.parseInt(SYSTEM.get("headerTextIndent"));
+            TEXT_INDENT = Integer.parseInt(SYSTEM.get("textIndent"));
+            TEXT_INDENT_STEPS = Integer.parseInt(SYSTEM.get("textIndentSteps"));
+            TEXT_INDENT_DURATION = Integer.parseInt(SYSTEM.get("textIndentDuration"));
+            TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
+        }
     private JPanel panel;
     private int numberOfCategories;
-    private int headerWidth;
-    private int headerHeight;
-    private int buttonWidth;
-    private int buttonHeight;
-    private int textIndent;
     
     public Main() throws InvalidFileFormatException, IOException {
         super("Animated Launcher Revision");
         setLayout(new MigLayout("wrap 1, insets 0",
-                "[grow, fill]",
-                "[grow, fill]"));
+                "[grow, fill]0",
+                "[grow, fill]0"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setFocusable(false);
         setFocusableWindowState(false);
         setUndecorated(true);
-        setBackground(new Color(0,0,0,0));
-        
-        config = new Ini(new FileReader("config.ini"));
+        setBackground(CLEAR);
         
         panel = new JPanel(new MigLayout("wrap 1, insets 0",
-                "[grow, fill]",
-                "[grow, fill]"));
+                "[grow, fill]0",
+                "[grow, fill]0"));
         
-        readSystemVariables();
+        numberOfCategories = Integer.parseInt(SYSTEM.get("numberOfCategories"));
+        
+        for (int i = 0; i < numberOfCategories; i++) {
+            Category category = new Category(i);
+            panel.add(category);
+        }
+        
+        getContentPane().add(panel);
         
         pack();
         setVisible(true);
 //        toBack();
     }
-
-    private void readSystemVariables() throws NumberFormatException, IOException {
-        Ini.Section system = config.get("System");
-        numberOfCategories = Integer.parseInt(system.get("numberOfCategories"));
-        headerWidth = Integer.parseInt(system.get("headerWidth"));
-        headerHeight = Integer.parseInt(system.get("headerHeight"));
-        buttonWidth = Integer.parseInt(system.get("buttonWidth"));
-        buttonHeight = Integer.parseInt(system.get("buttonHeight"));
-        textIndent = Integer.parseInt(system.get("textIndent"));
-        String hue = system.get("backgroundColor");
-        Integer v1 = 0xFFFFFFEE;
-        System.out.println(v1);
-        Color color = new Color(v1, true);
-    }
     
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
         new Main();
     }
-
 }
