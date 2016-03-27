@@ -85,7 +85,6 @@ public class ImageButton extends JPanel {
     private Timer fadeInTimer;
     private Timer fadeOutTimer;
     
-    private int expandSleep;
     private Timer expandTimer;
     private Timer collapseTimer;
     
@@ -115,6 +114,8 @@ public class ImageButton extends JPanel {
         fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
         expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
         collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
+//        expandTimer = new Timer(100, new ExpandTimerListener());
+//        collapseTimer = new Timer(1, new CollapseTimerListener());
         addMouseListener(new HeaderButtonMouseAdapter());
     }
     
@@ -273,10 +274,12 @@ public class ImageButton extends JPanel {
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
         public void mouseReleased(MouseEvent e) {
             if (isExpanded) {
-                collapse();
+                expandTimer.stop();
+                collapseTimer.start();
                 isExpanded = false;
             } else {
-                expand();
+                collapseTimer.stop();
+                expandTimer.start();
                 isExpanded = true;
             }
         }
@@ -341,14 +344,21 @@ public class ImageButton extends JPanel {
     }
     
     private void expand() {
-        getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
+//        getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
+        int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
+        getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
+                getParent().getComponent(1).getHeight() + stepAmount));
         getParent().getComponent(1).revalidate();
         getParent().getParent().revalidate();
         getParent().getParent().repaint();
     }
     
     private void collapse() {
-        getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
+//        getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
+        int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
+        System.out.println(stepAmount);
+        getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
+                getParent().getComponent(1).getHeight() - stepAmount));
         getParent().getComponent(1).revalidate();
         getParent().getParent().revalidate();
         getParent().getParent().repaint();
@@ -411,14 +421,22 @@ public class ImageButton extends JPanel {
     private class ExpandTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+            if (getParent().getComponent(1).getHeight() < ((Category) getParent()).getMaxHeight()) {
+                expand();
+            } else {
+                expandTimer.stop();
+            }
         }
     }
     
     private class CollapseTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            
+            if (getParent().getComponent(1).getHeight() > 0) {
+                collapse();
+            } else {
+                collapseTimer.stop();
+            }
         }
     }
     

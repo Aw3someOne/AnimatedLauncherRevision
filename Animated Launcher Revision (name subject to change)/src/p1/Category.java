@@ -11,6 +11,7 @@ public class Category extends JPanel {
     private int category;
     private int numberOfButtons;
     private JPanel buttonPanel;
+    private int maxHeight;
     
     public Category(int category) {
         this.category = category;
@@ -30,5 +31,13 @@ public class Category extends JPanel {
             buttonPanel.add(button);
         }
         add(buttonPanel);
+    }
+    
+    public int getMaxHeight() {
+        return maxHeight;
+    }
+    
+    public void calculateMaxHeight() {
+        maxHeight = buttonPanel.getHeight();
     }
 }

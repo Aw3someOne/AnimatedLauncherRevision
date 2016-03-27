@@ -56,7 +56,8 @@ public class Main extends JFrame {
             TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
             EXPAND_STEPS = Integer.parseInt(SYSTEM.get("expandSteps"));
             EXPAND_DURATION = Integer.parseInt(SYSTEM.get("expandDuration"));
-            EXPAND_SLEEP = EXPAND_STEPS / EXPAND_DURATION;
+            EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
+            System.out.println(EXPAND_SLEEP);
         }
     private JPanel panel;
     private int numberOfCategories;
@@ -90,6 +91,10 @@ public class Main extends JFrame {
         
         pack();
         setVisible(true);
+        
+        for (Category cat : categoryArray) {
+            cat.calculateMaxHeight();
+        }
 //        toBack();
     }
     
