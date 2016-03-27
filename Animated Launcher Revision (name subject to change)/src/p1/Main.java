@@ -1,6 +1,7 @@
 package p1;
 
 import java.awt.Color;
+import java.awt.Graphics;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -52,23 +53,25 @@ public class Main extends JFrame {
         }
     private JPanel panel;
     private int numberOfCategories;
+    private int[] heightArray;
     
     public Main() throws InvalidFileFormatException, IOException {
         super("Animated Launcher Revision");
         setLayout(new MigLayout("wrap 1, insets 0",
-                "[grow, fill]0",
-                "[grow, fill]0"));
+                "[fill]0",
+                "[fill]0"));
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setFocusable(false);
         setFocusableWindowState(false);
         setUndecorated(true);
         setBackground(CLEAR);
         
-        panel = new JPanel(new MigLayout("wrap 1, insets 0",
-                "[grow, fill]0",
-                "[grow, fill]0"));
+        panel = new JPanel(new MigLayout("wrap 1, insets 0, debug",
+                "[fill]0",
+                "[fill]0"));
         
         numberOfCategories = Integer.parseInt(SYSTEM.get("numberOfCategories"));
+        heightArray = new int[numberOfCategories];
         
         for (int i = 0; i < numberOfCategories; i++) {
             Category category = new Category(i);
@@ -80,6 +83,10 @@ public class Main extends JFrame {
         pack();
         setVisible(true);
 //        toBack();
+    }
+    
+    public void paintComponent(Graphics g) {
+        pack();
     }
     
     public static void main(String[] args) throws InvalidFileFormatException, IOException {

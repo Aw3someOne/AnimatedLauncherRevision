@@ -1,8 +1,5 @@
 package p1;
 
-
-import java.awt.Color;
-
 import javax.swing.JPanel;
 
 import org.ini4j.Ini;
@@ -20,8 +17,8 @@ public class Category extends JPanel {
         Ini.Section section = Main.CONFIG.get("Category" + category);
         this.numberOfButtons = Integer.parseInt(section.get("numberOfButtons"));
         setLayout(new MigLayout("wrap 1, insets 0",
-                "[grow, fill," + Main.HEADER_WIDTH + "]",
-                "[grow, fill," + Main.HEADER_HEIGHT + "]0[grow, fill]0"));
+                "[fill," + Main.HEADER_WIDTH + "]",
+                "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
         ImageButton header = new ImageButton(category);
         add(header);

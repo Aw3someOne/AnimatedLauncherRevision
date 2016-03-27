@@ -2,9 +2,11 @@ package p1;
 
 import java.awt.Color;
 import java.awt.Desktop;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -17,10 +19,14 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileSystemView;
 
 import org.ini4j.Ini;
 
@@ -49,6 +55,11 @@ public class ImageButton extends JPanel {
     private int backgroundColorAFinal;
     private Color backgroundColorFinal;
    
+    private int backgroundColorRStep;
+    private int backgroundColorGStep;
+    private int backgroundColorBStep;
+    private int backgroundColorAStep;
+    
     JLabel label;
     JLabel shadow;
     
@@ -65,13 +76,18 @@ public class ImageButton extends JPanel {
     private Color fontColorFinal;
     
     private int indent;
+    private int indentCurrent;
     private int indentSteps;
     private int indentDuration;
     private int indentSleep;
     private Timer indentTimer;
     private Timer unindentTimer;
+    private Timer fadeInTimer;
+    private Timer fadeOutTimer;
     
     private Font font;
+    
+    private boolean isExpanded = true;
     
     public ImageButton(int category, int buttonNumber) {
         this.category = category;
@@ -80,6 +96,8 @@ public class ImageButton extends JPanel {
         createButton();
         indentTimer = new Timer(indentSleep, new IndentTimerListener());
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
+        fadeInTimer = new Timer(indentSleep, new FadeInTimerListener());
+        fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
     }
     
@@ -87,6 +105,11 @@ public class ImageButton extends JPanel {
         this.category = category;
         readVariables(category);
         createButton();
+        indentTimer = new Timer(indentSleep, new IndentTimerListener());
+        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
+        fadeInTimer = new Timer(indentSleep, new FadeInTimerListener());
+        fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
+        addMouseListener(new HeaderButtonMouseAdapter());
     }
     
     public void paintComponent(Graphics g) {
@@ -98,21 +121,27 @@ public class ImageButton extends JPanel {
 
     private void createButton() {
         setLayout(new MigLayout("wrap 1, insets 0",
-                "[grow, fill," + width + "]",
-                "[grow, fill," + height + "]"));
+                "[fill," + width + "]",
+                "[fill," + height + "]"));
         backgroundColorCurrent = backgroundColorInitial;
+        indentCurrent = indent;
+        backgroundColorRStep = (backgroundColorRFinal - backgroundColorRInitial) / indentSteps;
+        backgroundColorGStep = (backgroundColorGFinal - backgroundColorGInitial) / indentSteps;
+        backgroundColorBStep = (backgroundColorBFinal - backgroundColorBInitial) / indentSteps;
+        backgroundColorAStep = (backgroundColorAFinal - backgroundColorAInitial) / indentSteps;
         label = new JLabel(text);
         label.setFont(font);
         label.setForeground(fontColorInitial);
         label.setOpaque(false);
         label.setBackground(Main.CLEAR);
-        add(label, "id label, pos " + indent + " 0.5al");
+        add(label, "id label, pos " + indentCurrent + " 0.5al");
         shadow = new JLabel(text);
         shadow.setFont(font);
         shadow.setForeground(Color.black);
         shadow.setOpaque(false);
         add(shadow, "pos (label.x + 2) (label.y + 2)");
-        
+        setPreferredSize(new Dimension(width,height));
+        setMaximumSize(new Dimension(width,height));
     }
     
     private void readVariables(int category, int buttonNumber) {
@@ -201,12 +230,16 @@ public class ImageButton extends JPanel {
     private class ImageButtonMouseAdapter extends MouseAdapter {
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
+            fadeOutTimer.stop();
             indentTimer.start();
+            fadeInTimer.start();
         }
         
         public void mouseExited(MouseEvent e) {
             indentTimer.stop();
+            fadeInTimer.stop();
             unindentTimer.start();
+            fadeOutTimer.start();
         }
         
         public void mouseReleased(MouseEvent e) {
@@ -223,11 +256,34 @@ public class ImageButton extends JPanel {
                 e1.printStackTrace();
             }
             try {
-                System.out.println(action);
                 open();
                 return;
             } catch (IOException e1) {
                 e1.printStackTrace();
+            }
+        }
+    }
+    
+    private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
+        public void mouseReleased(MouseEvent e) {
+            if (isExpanded) {
+                System.out.println(getParent());
+                System.out.println(getParent().getComponent(1));
+//              getParent().getComponent(1).setVisible(false);
+                getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
+                getParent().getComponent(1).revalidate();
+                getParent().getParent().revalidate();
+                getParent().getParent().repaint();
+                isExpanded = false;
+            } else {
+                System.out.println(getParent());
+                System.out.println(getParent().getComponent(1));
+//              getParent().getComponent(1).setVisible(false);
+                getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
+                getParent().getComponent(1).revalidate();
+                getParent().getParent().revalidate();
+                getParent().getParent().repaint();
+                isExpanded = true;
             }
         }
     }
@@ -245,34 +301,77 @@ public class ImageButton extends JPanel {
     
     private void open() throws IOException {
         Desktop desktop = Desktop.getDesktop();
+        Pattern p = Pattern.compile("%(.*)%");
+        Matcher m = p.matcher(action);
+        if (m.find()) {
+            String sysvar = m.group(1);
+            sysvar = System.getenv(sysvar);
+            sysvar = sysvar.replace("\\", "/");
+            action = action.replaceAll("%(.*)%", sysvar);
+            System.out.println(action);
+        }
         desktop.open(new File(action));
     }
     
     private void buttonTextStepIndent() {
         int xPos = label.getX();
         int yPos = label.getY();
-        xPos++;
-        label.setLocation(xPos, yPos);
-        shadow.setLocation(xPos+2, yPos+2);
-    }
-    
-    private void fadeIn() {
-        
+        indentCurrent = xPos + 1;
+        label.setLocation(indentCurrent, yPos);
+        shadow.setLocation(indentCurrent+2, yPos+2);
     }
     
     private void buttonTextStepUnindent() {
         int xPos = label.getX();
         int yPos = label.getY();
-        xPos--;
-        label.setLocation(xPos, yPos);
-        shadow.setLocation(xPos+2, yPos+2);
+        indentCurrent = xPos - 1;
+        label.setLocation(indentCurrent, yPos);
+        shadow.setLocation(indentCurrent+2, yPos+2);
     }
-
+    
+    private void fadeIn() {
+        int backgroundColorRCurrent = Math.min(255, backgroundColorCurrent.getRed() + backgroundColorRStep);
+        int backgroundColorGCurrent = Math.min(255, backgroundColorCurrent.getGreen() + backgroundColorGStep);
+        int backgroundColorBCurrent = Math.min(255, backgroundColorCurrent.getBlue() + backgroundColorBStep);
+        int backgroundColorACurrent = Math.min(255, backgroundColorCurrent.getAlpha() + backgroundColorAStep);
+        backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
+        System.out.println(backgroundColorCurrent);
+    }
+    
+    private void fadeOut() {
+        int backgroundColorRCurrent = Math.max(0, backgroundColorCurrent.getRed() - backgroundColorRStep);
+        int backgroundColorGCurrent = Math.max(0, backgroundColorCurrent.getGreen() - backgroundColorGStep);
+        int backgroundColorBCurrent = Math.max(0, backgroundColorCurrent.getBlue() - backgroundColorBStep);
+        int backgroundColorACurrent = Math.max(0, backgroundColorCurrent.getAlpha() - backgroundColorAStep);
+        backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
+    }
+    
+    public void shrink() {
+        int width = label.getWidth();
+        int height = label.getHeight();
+        width--;
+        height--;
+        setSize(width, height);
+        label.setSize(width, height);
+        shadow.setSize(width, height);
+    }
+    
+    public void grow() {
+        int width = label.getWidth();
+        int height = label.getHeight();
+        width++;
+        height++;
+        setSize(width, height);
+        label.setSize(width, height);
+        shadow.setSize(width, height);
+    }
+    
     public class IndentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (label.getX() < indent + indentSteps) {
                 buttonTextStepIndent();
+                repaint();
             } else {
                 indentTimer.stop();
             }
@@ -284,8 +383,39 @@ public class ImageButton extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (label.getX() > indent) {
                 buttonTextStepUnindent();
+                repaint();
             } else {
                 unindentTimer.stop();
+            }
+        }
+    }
+    
+    public class FadeInTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (backgroundColorCurrent.getRed() < backgroundColorRFinal
+                    || backgroundColorCurrent.getGreen() < backgroundColorGFinal
+                    || backgroundColorCurrent.getBlue() < backgroundColorBFinal
+                    || backgroundColorCurrent.getAlpha() < backgroundColorAFinal) {
+                fadeIn();
+                repaint();
+            } else {
+                fadeInTimer.stop();
+            }
+        }
+    }
+    
+    public class FadeOutTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (backgroundColorCurrent.getRed() > backgroundColorRInitial
+                    || backgroundColorCurrent.getGreen() > backgroundColorGInitial
+                    || backgroundColorCurrent.getBlue() > backgroundColorBInitial
+                    || backgroundColorCurrent.getAlpha() > backgroundColorAInitial) {
+                fadeOut();
+                repaint();
+            } else {
+                fadeOutTimer.stop();
             }
         }
     }
