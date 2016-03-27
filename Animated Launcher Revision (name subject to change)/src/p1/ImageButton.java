@@ -85,6 +85,10 @@ public class ImageButton extends JPanel {
     private Timer fadeInTimer;
     private Timer fadeOutTimer;
     
+    private int expandSleep;
+    private Timer expandTimer;
+    private Timer collapseTimer;
+    
     private Font font;
     
     private boolean isExpanded = true;
@@ -109,6 +113,8 @@ public class ImageButton extends JPanel {
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
         fadeInTimer = new Timer(indentSleep, new FadeInTimerListener());
         fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
+        expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
+        collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
         addMouseListener(new HeaderButtonMouseAdapter());
     }
     
@@ -267,22 +273,10 @@ public class ImageButton extends JPanel {
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
         public void mouseReleased(MouseEvent e) {
             if (isExpanded) {
-                System.out.println(getParent());
-                System.out.println(getParent().getComponent(1));
-//              getParent().getComponent(1).setVisible(false);
-                getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
-                getParent().getComponent(1).revalidate();
-                getParent().getParent().revalidate();
-                getParent().getParent().repaint();
+                collapse();
                 isExpanded = false;
             } else {
-                System.out.println(getParent());
-                System.out.println(getParent().getComponent(1));
-//              getParent().getComponent(1).setVisible(false);
-                getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
-                getParent().getComponent(1).revalidate();
-                getParent().getParent().revalidate();
-                getParent().getParent().repaint();
+                expand();
                 isExpanded = true;
             }
         }
@@ -346,27 +340,21 @@ public class ImageButton extends JPanel {
         backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
     }
     
-    public void shrink() {
-        int width = label.getWidth();
-        int height = label.getHeight();
-        width--;
-        height--;
-        setSize(width, height);
-        label.setSize(width, height);
-        shadow.setSize(width, height);
+    private void expand() {
+        getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
+        getParent().getComponent(1).revalidate();
+        getParent().getParent().revalidate();
+        getParent().getParent().repaint();
     }
     
-    public void grow() {
-        int width = label.getWidth();
-        int height = label.getHeight();
-        width++;
-        height++;
-        setSize(width, height);
-        label.setSize(width, height);
-        shadow.setSize(width, height);
+    private void collapse() {
+        getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
+        getParent().getComponent(1).revalidate();
+        getParent().getParent().revalidate();
+        getParent().getParent().repaint();
     }
     
-    public class IndentTimerListener implements ActionListener {
+    private class IndentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (label.getX() < indent + indentSteps) {
@@ -378,7 +366,7 @@ public class ImageButton extends JPanel {
         }
     }
     
-    public class UnindentTimerListener implements ActionListener {
+    private class UnindentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (label.getX() > indent) {
@@ -390,7 +378,7 @@ public class ImageButton extends JPanel {
         }
     }
     
-    public class FadeInTimerListener implements ActionListener {
+    private class FadeInTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (backgroundColorCurrent.getRed() < backgroundColorRFinal
@@ -405,7 +393,7 @@ public class ImageButton extends JPanel {
         }
     }
     
-    public class FadeOutTimerListener implements ActionListener {
+    private class FadeOutTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (backgroundColorCurrent.getRed() > backgroundColorRInitial
@@ -419,4 +407,19 @@ public class ImageButton extends JPanel {
             }
         }
     }
+    
+    private class ExpandTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    }
+    
+    private class CollapseTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            
+        }
+    }
+    
 }

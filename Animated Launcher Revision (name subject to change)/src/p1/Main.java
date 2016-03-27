@@ -29,7 +29,11 @@ public class Main extends JFrame {
     public static final int TEXT_INDENT_STEPS;
     public static final int TEXT_INDENT_DURATION;
     public static final int TEXT_INDENT_SLEEP;
+    public static final int EXPAND_STEPS;
+    public static final int EXPAND_DURATION;
+    public static final int EXPAND_SLEEP;
     public static final Color CLEAR = new Color(0,0,0,0);
+    public static Category[] categoryArray;
     static {
         FileReader fr = null;
         Ini ini = null;
@@ -50,6 +54,9 @@ public class Main extends JFrame {
             TEXT_INDENT_STEPS = Integer.parseInt(SYSTEM.get("textIndentSteps"));
             TEXT_INDENT_DURATION = Integer.parseInt(SYSTEM.get("textIndentDuration"));
             TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
+            EXPAND_STEPS = Integer.parseInt(SYSTEM.get("expandSteps"));
+            EXPAND_DURATION = Integer.parseInt(SYSTEM.get("expandDuration"));
+            EXPAND_SLEEP = EXPAND_STEPS / EXPAND_DURATION;
         }
     private JPanel panel;
     private int numberOfCategories;
@@ -72,9 +79,10 @@ public class Main extends JFrame {
         
         numberOfCategories = Integer.parseInt(SYSTEM.get("numberOfCategories"));
         heightArray = new int[numberOfCategories];
-        
+        categoryArray = new Category[numberOfCategories];
         for (int i = 0; i < numberOfCategories; i++) {
             Category category = new Category(i);
+            categoryArray[i] = category;
             panel.add(category);
         }
         
@@ -83,10 +91,6 @@ public class Main extends JFrame {
         pack();
         setVisible(true);
 //        toBack();
-    }
-    
-    public void paintComponent(Graphics g) {
-        pack();
     }
     
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
