@@ -1,12 +1,8 @@
 package p1;
 
 import java.awt.Color;
-import java.awt.Graphics;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.Scanner;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
