@@ -3,6 +3,7 @@ package p1;
 import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -37,6 +38,12 @@ public class Main extends JFrame {
                 fr = new FileReader("config.ini");
                 ini = new Ini(fr);
             } catch (IOException e) {
+                InputStream stream = Main.class.getClassLoader().getResourceAsStream("default.ini");
+                try {
+                    ini = new Ini(stream);
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
                 e.printStackTrace();
             }
             CONFIG = ini;
@@ -84,15 +91,17 @@ public class Main extends JFrame {
         
         pack();
         
-        setVisible(true);
+        setVisible(false);
         
         for (Category cat : categoryArray) {
             cat.calculateMaxHeight();
         }
         
         for (Category cat : categoryArray) {
-            cat.collapse();
+            cat.collapseInstant();
         }
+        
+        setVisible(true);
 //        toBack();
     }
     

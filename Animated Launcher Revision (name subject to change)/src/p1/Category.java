@@ -1,5 +1,7 @@
 package p1;
 
+import java.awt.Dimension;
+
 import javax.swing.JPanel;
 
 import org.ini4j.Ini;
@@ -32,6 +34,12 @@ public class Category extends JPanel {
             buttonPanel.add(button);
         }
         add(buttonPanel);
+    }
+    
+    public void collapseInstant() {
+        buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
+        header.isExpanded = false;
+        revalidate();
     }
     
     public void collapse() {

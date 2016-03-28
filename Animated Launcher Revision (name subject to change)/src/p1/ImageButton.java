@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import org.ini4j.Ini;
@@ -242,43 +243,47 @@ public class ImageButton extends JPanel {
     }
     
     private class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
-        public void mouseReleased(MouseEvent e) {
-            try {
-                run();
-                return;
-            } catch (IOException e1) {
-                e1.printStackTrace();
-            }
-            try {
-                uri();
-                return;
-            } catch (URISyntaxException | IOException e1) {
-                e1.printStackTrace();
-            }
-            try {
-                open();
-                return;
-            } catch (IOException e1) {
-                e1.printStackTrace();
+        public void mouseClicked(MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                try {
+                    run();
+                    return;
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    uri();
+                    return;
+                } catch (URISyntaxException | IOException e1) {
+                    e1.printStackTrace();
+                }
+                try {
+                    open();
+                    return;
+                } catch (IOException e1) {
+                    e1.printStackTrace();
+                }
             }
         }
     }
     
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
-        public void mouseReleased(MouseEvent e) {
-            for (int i = 0; i < Main.categoryArray.length; i++) {
-                if (i != category) {
-                    Main.categoryArray[i].collapse();
+        public void mouseClicked(MouseEvent e) {
+            if (SwingUtilities.isLeftMouseButton(e)) {
+                for (int i = 0; i < Main.categoryArray.length; i++) {
+                    if (i != category) {
+                        Main.categoryArray[i].collapse();
+                    }
                 }
-            }
-            if (isExpanded) {
-                expandTimer.stop();
-                collapseTimer.start();
-                isExpanded = false;
-            } else {
-                collapseTimer.stop();
-                expandTimer.start();
-                isExpanded = true;
+                if (isExpanded) {
+                    expandTimer.stop();
+                    collapseTimer.start();
+                    isExpanded = false;
+                } else {
+                    collapseTimer.stop();
+                    expandTimer.start();
+                    isExpanded = true;
+                }
             }
         }
     }
