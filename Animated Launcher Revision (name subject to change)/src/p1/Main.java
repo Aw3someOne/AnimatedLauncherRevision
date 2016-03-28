@@ -53,11 +53,9 @@ public class Main extends JFrame {
             EXPAND_STEPS = Integer.parseInt(SYSTEM.get("expandSteps"));
             EXPAND_DURATION = Integer.parseInt(SYSTEM.get("expandDuration"));
             EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
-            System.out.println(EXPAND_SLEEP);
         }
     private JPanel panel;
     private int numberOfCategories;
-    private int[] heightArray;
     
     public Main() throws InvalidFileFormatException, IOException {
         super("Animated Launcher Revision");
@@ -70,12 +68,11 @@ public class Main extends JFrame {
         setUndecorated(true);
         setBackground(CLEAR);
         
-        panel = new JPanel(new MigLayout("wrap 1, insets 0, debug",
+        panel = new JPanel(new MigLayout("wrap 1, insets 0",
                 "[fill]0",
                 "[fill]0"));
         
         numberOfCategories = Integer.parseInt(SYSTEM.get("numberOfCategories"));
-        heightArray = new int[numberOfCategories];
         categoryArray = new Category[numberOfCategories];
         for (int i = 0; i < numberOfCategories; i++) {
             Category category = new Category(i);
@@ -86,10 +83,15 @@ public class Main extends JFrame {
         getContentPane().add(panel);
         
         pack();
+        
         setVisible(true);
         
         for (Category cat : categoryArray) {
             cat.calculateMaxHeight();
+        }
+        
+        for (Category cat : categoryArray) {
+            cat.collapse();
         }
 //        toBack();
     }

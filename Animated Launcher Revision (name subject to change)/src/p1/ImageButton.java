@@ -78,12 +78,12 @@ public class ImageButton extends JPanel {
     private Timer fadeInTimer;
     private Timer fadeOutTimer;
     
-    private Timer expandTimer;
-    private Timer collapseTimer;
+    Timer expandTimer;
+    Timer collapseTimer;
     
     private Font font;
     
-    private boolean isExpanded = true;
+    boolean isExpanded = true;
     
     public ImageButton(int category, int buttonNumber) {
         this.category = category;
@@ -107,8 +107,6 @@ public class ImageButton extends JPanel {
         fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
         expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
         collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
-//        expandTimer = new Timer(100, new ExpandTimerListener());
-//        collapseTimer = new Timer(1, new CollapseTimerListener());
         addMouseListener(new HeaderButtonMouseAdapter());
     }
     
@@ -227,7 +225,7 @@ public class ImageButton extends JPanel {
         fontColorFinal = new Color(fontColorRFinal, fontColorGFinal, fontColorBFinal, fontColorAFinal);
     }
     
-    private class ImageButtonMouseAdapter extends MouseAdapter {
+    private class BaseButtonMouseAdapter extends MouseAdapter {
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
             fadeOutTimer.stop();
@@ -241,7 +239,9 @@ public class ImageButton extends JPanel {
             unindentTimer.start();
             fadeOutTimer.start();
         }
-        
+    }
+    
+    private class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
         public void mouseReleased(MouseEvent e) {
             try {
                 run();
@@ -266,6 +266,11 @@ public class ImageButton extends JPanel {
     
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
         public void mouseReleased(MouseEvent e) {
+            for (int i = 0; i < Main.categoryArray.length; i++) {
+                if (i != category) {
+                    Main.categoryArray[i].collapse();
+                }
+            }
             if (isExpanded) {
                 expandTimer.stop();
                 collapseTimer.start();
@@ -307,16 +312,24 @@ public class ImageButton extends JPanel {
         int xPos = label.getX();
         int yPos = label.getY();
         indentCurrent = xPos + 1;
-        label.setLocation(indentCurrent, yPos);
-        shadow.setLocation(indentCurrent+2, yPos+2);
+        add(label, "id label, pos " + indentCurrent + " 0.5al");
+        add(shadow, "pos (label.x + 2) (label.y + 2)");
+//        label.setLocation(indentCurrent, yPos);
+//        shadow.setLocation(indentCurrent+2, yPos+2);
+        revalidate();
+//        repaint();
     }
     
     private void buttonTextStepUnindent() {
         int xPos = label.getX();
         int yPos = label.getY();
         indentCurrent = xPos - 1;
-        label.setLocation(indentCurrent, yPos);
-        shadow.setLocation(indentCurrent+2, yPos+2);
+        add(label, "id label, pos " + indentCurrent + " 0.5al");
+        add(shadow, "pos (label.x + 2) (label.y + 2)");
+//        label.setLocation(indentCurrent, yPos);
+//        shadow.setLocation(indentCurrent+2, yPos+2);
+        revalidate();
+//        repaint();
     }
     
     private void fadeIn() {
@@ -325,7 +338,7 @@ public class ImageButton extends JPanel {
         int backgroundColorBCurrent = Math.min(255, backgroundColorCurrent.getBlue() + backgroundColorBStep);
         int backgroundColorACurrent = Math.min(255, backgroundColorCurrent.getAlpha() + backgroundColorAStep);
         backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
-        System.out.println(backgroundColorCurrent);
+        repaint();
     }
     
     private void fadeOut() {
@@ -334,27 +347,23 @@ public class ImageButton extends JPanel {
         int backgroundColorBCurrent = Math.max(0, backgroundColorCurrent.getBlue() - backgroundColorBStep);
         int backgroundColorACurrent = Math.max(0, backgroundColorCurrent.getAlpha() - backgroundColorAStep);
         backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
+        repaint();
     }
     
     private void expand() {
-//        getParent().getComponent(1).setMaximumSize(new Dimension(500,500));
         int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
                 getParent().getComponent(1).getHeight() + stepAmount));
-        getParent().getComponent(1).revalidate();
-        getParent().getParent().revalidate();
-        getParent().getParent().repaint();
+//        getParent().getComponent(1).revalidate();
+        revalidate();
     }
     
     private void collapse() {
-//        getParent().getComponent(1).setMaximumSize(new Dimension(500,0));
         int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
-        System.out.println(stepAmount);
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
                 getParent().getComponent(1).getHeight() - stepAmount));
-        getParent().getComponent(1).revalidate();
-        getParent().getParent().revalidate();
-        getParent().getParent().repaint();
+//        getParent().getComponent(1).revalidate();
+        revalidate();
     }
     
     private class IndentTimerListener implements ActionListener {
@@ -362,7 +371,6 @@ public class ImageButton extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (label.getX() < indent + indentSteps) {
                 buttonTextStepIndent();
-                repaint();
             } else {
                 indentTimer.stop();
             }
@@ -374,7 +382,6 @@ public class ImageButton extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (label.getX() > indent) {
                 buttonTextStepUnindent();
-                repaint();
             } else {
                 unindentTimer.stop();
             }
@@ -389,7 +396,6 @@ public class ImageButton extends JPanel {
                     || backgroundColorCurrent.getBlue() < backgroundColorBFinal
                     || backgroundColorCurrent.getAlpha() < backgroundColorAFinal) {
                 fadeIn();
-                repaint();
             } else {
                 fadeInTimer.stop();
             }
@@ -404,7 +410,6 @@ public class ImageButton extends JPanel {
                     || backgroundColorCurrent.getBlue() > backgroundColorBInitial
                     || backgroundColorCurrent.getAlpha() > backgroundColorAInitial) {
                 fadeOut();
-                repaint();
             } else {
                 fadeOutTimer.stop();
             }
@@ -432,5 +437,4 @@ public class ImageButton extends JPanel {
             }
         }
     }
-    
 }

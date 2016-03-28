@@ -12,6 +12,7 @@ public class Category extends JPanel {
     private int numberOfButtons;
     private JPanel buttonPanel;
     private int maxHeight;
+    private ImageButton header;
     
     public Category(int category) {
         this.category = category;
@@ -21,7 +22,7 @@ public class Category extends JPanel {
                 "[fill," + Main.HEADER_WIDTH + "]",
                 "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
-        ImageButton header = new ImageButton(category);
+        header = new ImageButton(category);
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
                 "[grow, fill," + Main.HEADER_WIDTH + "]",
@@ -31,6 +32,12 @@ public class Category extends JPanel {
             buttonPanel.add(button);
         }
         add(buttonPanel);
+    }
+    
+    public void collapse() {
+        header.expandTimer.stop();
+        header.collapseTimer.start();
+        header.isExpanded = false;
     }
     
     public int getMaxHeight() {
