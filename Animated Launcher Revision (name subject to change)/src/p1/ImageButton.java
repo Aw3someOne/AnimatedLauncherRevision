@@ -105,10 +105,10 @@ public class ImageButton extends JPanel {
         this.buttonNumber = buttonNumber;
         readVariables(category, buttonNumber);
         createButton();
-//        indentTimer = new Timer(indentSleep, new IndentTimerListener());
-//        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-//        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
-//        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
+        indentTimer = new Timer(indentSleep, new IndentTimerListener());
+        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
+        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
+        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
     }
     
