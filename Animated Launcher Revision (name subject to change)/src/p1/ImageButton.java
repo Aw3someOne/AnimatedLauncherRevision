@@ -105,10 +105,10 @@ public class ImageButton extends JPanel {
         this.buttonNumber = buttonNumber;
         readVariables(category, buttonNumber);
         createButton();
-        indentTimer = new Timer(indentSleep, new IndentTimerListener());
-        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
-        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
+//        indentTimer = new Timer(indentSleep, new IndentTimerListener());
+//        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
+//        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
+//        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
     }
     
@@ -173,6 +173,7 @@ public class ImageButton extends JPanel {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
+        setMinimumSize(new Dimension(0,0));
         setPreferredSize(new Dimension(width,height));
         setMaximumSize(new Dimension(width,height));
     }
@@ -448,7 +449,7 @@ public class ImageButton extends JPanel {
     private class ColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (backgroundColorCurrent != backgroundColorFinal) {
+            if (!backgroundColorCurrent.equals(backgroundColorFinal)) {
                 if (backgroundColorRStep > 0 && backgroundColorRCurrent < backgroundColorRFinal) {
                     redStepUp();
                 } else if (backgroundColorRStep < 0 && backgroundColorRCurrent > backgroundColorRFinal) {
@@ -484,7 +485,7 @@ public class ImageButton extends JPanel {
     private class ColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (backgroundColorCurrent != backgroundColorInitial) {
+            if (!backgroundColorCurrent.equals(backgroundColorInitial)) {
                 if (backgroundColorRStep > 0 && backgroundColorRCurrent > backgroundColorRInitial) {
                     redStepDown();
                 } else if (backgroundColorRStep < 0 && backgroundColorRCurrent < backgroundColorRInitial) {
