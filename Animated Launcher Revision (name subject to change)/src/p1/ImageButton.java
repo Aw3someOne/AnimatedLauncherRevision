@@ -41,6 +41,10 @@ public class ImageButton extends JPanel {
     private int backgroundColorAInitial;
     private Color backgroundColorInitial;
     
+    private double backgroundColorRCurrent;
+    private double backgroundColorGCurrent;
+    private double backgroundColorBCurrent;
+    private double backgroundColorACurrent;
     private Color backgroundColorCurrent;
     
     private int backgroundColorRFinal;
@@ -49,10 +53,10 @@ public class ImageButton extends JPanel {
     private int backgroundColorAFinal;
     private Color backgroundColorFinal;
    
-    private int backgroundColorRStep;
-    private int backgroundColorGStep;
-    private int backgroundColorBStep;
-    private int backgroundColorAStep;
+    private double backgroundColorRStep;
+    private double backgroundColorGStep;
+    private double backgroundColorBStep;
+    private double backgroundColorAStep;
     
     JLabel label;
     JLabel shadow;
@@ -76,8 +80,8 @@ public class ImageButton extends JPanel {
     private int indentSleep;
     private Timer indentTimer;
     private Timer unindentTimer;
-    private Timer fadeInTimer;
-    private Timer fadeOutTimer;
+    private Timer colorStepUpTimer;
+    private Timer colorStepDownTimer;
     
     Timer expandTimer;
     Timer collapseTimer;
@@ -93,8 +97,8 @@ public class ImageButton extends JPanel {
         createButton();
         indentTimer = new Timer(indentSleep, new IndentTimerListener());
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-        fadeInTimer = new Timer(indentSleep, new FadeInTimerListener());
-        fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
+        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
+        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
     }
     
@@ -104,8 +108,8 @@ public class ImageButton extends JPanel {
         createButton();
         indentTimer = new Timer(indentSleep, new IndentTimerListener());
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-        fadeInTimer = new Timer(indentSleep, new FadeInTimerListener());
-        fadeOutTimer = new Timer(indentSleep, new FadeOutTimerListener());
+        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
+        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
         collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
         addMouseListener(new HeaderButtonMouseAdapter());
@@ -123,6 +127,10 @@ public class ImageButton extends JPanel {
                 "[fill," + width + "]",
                 "[fill," + height + "]"));
         backgroundColorCurrent = backgroundColorInitial;
+        backgroundColorRCurrent = backgroundColorRInitial;
+        backgroundColorGCurrent = backgroundColorGInitial;
+        backgroundColorBCurrent = backgroundColorBInitial;
+        backgroundColorACurrent = backgroundColorAInitial;
         indentCurrent = indent;
         backgroundColorRStep = (backgroundColorRFinal - backgroundColorRInitial) / indentSteps;
         backgroundColorGStep = (backgroundColorGFinal - backgroundColorGInitial) / indentSteps;
@@ -229,16 +237,16 @@ public class ImageButton extends JPanel {
     private class BaseButtonMouseAdapter extends MouseAdapter {
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
-            fadeOutTimer.stop();
+            colorStepDownTimer.stop();
             indentTimer.start();
-            fadeInTimer.start();
+            colorStepUpTimer.start();
         }
         
         public void mouseExited(MouseEvent e) {
             indentTimer.stop();
-            fadeInTimer.stop();
+            colorStepUpTimer.stop();
             unindentTimer.start();
-            fadeOutTimer.start();
+            colorStepDownTimer.start();
         }
     }
     
@@ -337,29 +345,42 @@ public class ImageButton extends JPanel {
 //        repaint();
     }
     
-    private void fadeIn() {
-        int backgroundColorRCurrent = Math.min(255, backgroundColorCurrent.getRed() + backgroundColorRStep);
-        int backgroundColorGCurrent = Math.min(255, backgroundColorCurrent.getGreen() + backgroundColorGStep);
-        int backgroundColorBCurrent = Math.min(255, backgroundColorCurrent.getBlue() + backgroundColorBStep);
-        int backgroundColorACurrent = Math.min(255, backgroundColorCurrent.getAlpha() + backgroundColorAStep);
-        backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
-        repaint();
+    private void redStepUp() {
+        backgroundColorRCurrent = forceRGB(backgroundColorRCurrent + backgroundColorRStep);
     }
     
-    private void fadeOut() {
-        int backgroundColorRCurrent = Math.max(0, backgroundColorCurrent.getRed() - backgroundColorRStep);
-        int backgroundColorGCurrent = Math.max(0, backgroundColorCurrent.getGreen() - backgroundColorGStep);
-        int backgroundColorBCurrent = Math.max(0, backgroundColorCurrent.getBlue() - backgroundColorBStep);
-        int backgroundColorACurrent = Math.max(0, backgroundColorCurrent.getAlpha() - backgroundColorAStep);
-        backgroundColorCurrent = new Color(backgroundColorRCurrent, backgroundColorGCurrent, backgroundColorBCurrent, backgroundColorACurrent);
-        repaint();
+    private void redStepDown() {
+        backgroundColorRCurrent = forceRGB(backgroundColorRCurrent - backgroundColorRStep);
+    }
+    
+    private void greenStepUp() {
+        backgroundColorGCurrent = forceRGB(backgroundColorGCurrent + backgroundColorGStep);
+    }
+    
+    private void greenStepDown() {
+        backgroundColorGCurrent = forceRGB(backgroundColorGCurrent - backgroundColorGStep);
+    }
+    
+    private void blueStepUp() {
+        backgroundColorBCurrent = forceRGB(backgroundColorBCurrent + backgroundColorBStep);
+    }
+    
+    private void blueStepDown() {
+        backgroundColorBCurrent = forceRGB(backgroundColorBCurrent - backgroundColorBStep);
+    }
+    
+    private void alphaStepUp() {
+        backgroundColorACurrent = forceRGB(backgroundColorACurrent + backgroundColorAStep);
+    }
+    
+    private void alphaStepDown() {
+        backgroundColorACurrent = forceRGB(backgroundColorACurrent - backgroundColorAStep);
     }
     
     private void expand() {
         int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
                 getParent().getComponent(1).getHeight() + stepAmount));
-//        getParent().getComponent(1).revalidate();
         revalidate();
     }
     
@@ -367,7 +388,6 @@ public class ImageButton extends JPanel {
         int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
                 getParent().getComponent(1).getHeight() - stepAmount));
-//        getParent().getComponent(1).revalidate();
         revalidate();
     }
     
@@ -393,30 +413,74 @@ public class ImageButton extends JPanel {
         }
     }
     
-    private class FadeInTimerListener implements ActionListener {
+    private class ColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (backgroundColorCurrent.getRed() < backgroundColorRFinal
-                    || backgroundColorCurrent.getGreen() < backgroundColorGFinal
-                    || backgroundColorCurrent.getBlue() < backgroundColorBFinal
-                    || backgroundColorCurrent.getAlpha() < backgroundColorAFinal) {
-                fadeIn();
+            if (backgroundColorCurrent != backgroundColorFinal) {
+                if (backgroundColorRStep > 0 && backgroundColorRCurrent < backgroundColorRFinal) {
+                    redStepUp();
+                } else if (backgroundColorRStep < 0 && backgroundColorRCurrent > backgroundColorRFinal) {
+                    redStepUp();
+                }
+                if (backgroundColorGStep > 0 && backgroundColorGCurrent < backgroundColorGFinal) {
+                    greenStepUp();
+                } else if (backgroundColorGStep < 0 && backgroundColorGCurrent > backgroundColorGFinal) {
+                    greenStepUp();
+                }
+                if (backgroundColorBStep > 0 && backgroundColorBCurrent < backgroundColorBFinal) {
+                    blueStepUp();
+                } else if (backgroundColorBStep < 0 && backgroundColorBCurrent > backgroundColorBFinal) {
+                    blueStepUp();
+                }
+                if (backgroundColorAStep > 0 && backgroundColorACurrent < backgroundColorAFinal) {
+                    alphaStepUp();
+                } else if (backgroundColorAStep < 0 && backgroundColorACurrent > backgroundColorAFinal) {
+                    alphaStepUp();
+                }
+                backgroundColorCurrent = new Color(
+                        (int) backgroundColorRCurrent,
+                        (int) backgroundColorGCurrent,
+                        (int) backgroundColorBCurrent,
+                        (int) backgroundColorACurrent);
+                repaint();
             } else {
-                fadeInTimer.stop();
+                colorStepUpTimer.stop();
             }
         }
     }
     
-    private class FadeOutTimerListener implements ActionListener {
+    private class ColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (backgroundColorCurrent.getRed() > backgroundColorRInitial
-                    || backgroundColorCurrent.getGreen() > backgroundColorGInitial
-                    || backgroundColorCurrent.getBlue() > backgroundColorBInitial
-                    || backgroundColorCurrent.getAlpha() > backgroundColorAInitial) {
-                fadeOut();
+            if (backgroundColorCurrent != backgroundColorInitial) {
+                if (backgroundColorRStep > 0 && backgroundColorRCurrent > backgroundColorRInitial) {
+                    redStepDown();
+                } else if (backgroundColorRStep < 0 && backgroundColorRCurrent < backgroundColorRInitial) {
+                    redStepDown();
+                }
+                if (backgroundColorGStep > 0 && backgroundColorGCurrent > backgroundColorGInitial) {
+                    greenStepDown();
+                } else if (backgroundColorGStep < 0 && backgroundColorGCurrent < backgroundColorGInitial) {
+                    greenStepDown();
+                }
+                if (backgroundColorBStep > 0 && backgroundColorBCurrent > backgroundColorBInitial) {
+                    blueStepDown();
+                } else if (backgroundColorBStep < 0 && backgroundColorBCurrent < backgroundColorBInitial) {
+                    blueStepDown();
+                }
+                if (backgroundColorAStep > 0 && backgroundColorACurrent > backgroundColorAInitial) {
+                    alphaStepDown();
+                } else if (backgroundColorAStep < 0 && backgroundColorACurrent < backgroundColorAInitial) {
+                    alphaStepDown();
+                }
+                backgroundColorCurrent = new Color(
+                        (int) backgroundColorRCurrent,
+                        (int) backgroundColorGCurrent,
+                        (int) backgroundColorBCurrent,
+                        (int) backgroundColorACurrent);
+                repaint();
             } else {
-                fadeOutTimer.stop();
+                colorStepDownTimer.stop();
             }
         }
     }
@@ -441,5 +505,13 @@ public class ImageButton extends JPanel {
                 collapseTimer.stop();
             }
         }
+    }
+    
+    private int forceRGB(int i) {
+        return Math.min(255, Math.max(0, i));
+    }
+    
+    private double forceRGB(double i) {
+        return Math.min(255, Math.max(0, i));
     }
 }

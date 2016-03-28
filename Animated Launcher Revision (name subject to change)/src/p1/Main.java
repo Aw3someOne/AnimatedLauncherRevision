@@ -38,7 +38,8 @@ public class Main extends JFrame {
                 fr = new FileReader("config.ini");
                 ini = new Ini(fr);
             } catch (IOException e) {
-                InputStream stream = Main.class.getClassLoader().getResourceAsStream("default.ini");
+                // default settings ini
+                InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
                 try {
                     ini = new Ini(stream);
                 } catch (IOException e1) {

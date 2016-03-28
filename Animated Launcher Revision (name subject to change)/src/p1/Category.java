@@ -1,7 +1,11 @@
 package p1;
 
 import java.awt.Dimension;
+import java.awt.Image;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.ini4j.Ini;
@@ -15,15 +19,25 @@ public class Category extends JPanel {
     private JPanel buttonPanel;
     private int maxHeight;
     private ImageButton header;
+    private Image foregroundImage;
+    private int foregroundImageXOffset;
+    private int foregroundImageYOffset;
+    private int foregroundImageXCrop;
+    private int foregroundImageYCrop;
+    private int[] foregroundImageBounds;
+    private Ini.Section section;
     
-    public Category(int category) {
+    public Category(int category) throws IOException {
         this.category = category;
-        Ini.Section section = Main.CONFIG.get("Category" + category);
+        section = Main.CONFIG.get("Category" + category);
         this.numberOfButtons = Integer.parseInt(section.get("numberOfButtons"));
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + Main.HEADER_WIDTH + "]",
                 "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
+        
+        loadImages();
+        
         header = new ImageButton(category);
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
@@ -34,6 +48,23 @@ public class Category extends JPanel {
             buttonPanel.add(button);
         }
         add(buttonPanel);
+    }
+    
+    public void loadImages() throws IOException {
+        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
+        foregroundImageXOffset = Integer.parseInt(section.get("ForegroundImageXOffset"));
+        foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
+        foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
+        foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
+        foregroundImageBounds = new int[] {foregroundImageXOffset, foregroundImageYOffset, foregroundImageXCrop, foregroundImageYCrop};
+    }
+    
+    public Image getForegroundImage() {
+        return foregroundImage;
+    }
+    
+    public int[] getForegroundImageBounds() {
+        return foregroundImageBounds;
     }
     
     public void collapseInstant() {
