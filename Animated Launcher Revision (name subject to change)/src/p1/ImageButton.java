@@ -6,10 +6,12 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URI;
@@ -17,6 +19,8 @@ import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -57,6 +61,12 @@ public class ImageButton extends JPanel {
     private double backgroundColorGStep;
     private double backgroundColorBStep;
     private double backgroundColorAStep;
+
+    private BufferedImage foregroundImage;
+    private int foregroundImageXOffset;
+    private int foregroundImageYOffset;
+    private int foregroundImageXCrop;
+    private int foregroundImageYCrop;
     
     JLabel label;
     JLabel shadow;
@@ -90,7 +100,7 @@ public class ImageButton extends JPanel {
     
     boolean isExpanded = true;
     
-    public ImageButton(int category, int buttonNumber) {
+    public ImageButton(int category, int buttonNumber) throws IOException {
         this.category = category;
         this.buttonNumber = buttonNumber;
         readVariables(category, buttonNumber);
@@ -120,7 +130,16 @@ public class ImageButton extends JPanel {
         Graphics2D gui = (Graphics2D)g;
         gui.setBackground(backgroundColorCurrent);
         gui.clearRect(0, 0, width, height);
+//        g.drawImage(foregroundImage, 0, 0, this);
+//        gui.drawImage(foregroundImage,
+//                foregroundImageXOffset, foregroundImageYOffset, width + foregroundImageXOffset, height + foregroundImageYOffset,
+//                foregroundImageXCrop,foregroundImageYCrop + buttonNumber * height, width, (buttonNumber + 1) * height, null);
     }
+    
+//    public void paint(Graphics g) {
+//        super.paint(g);
+//        g.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
+//    }
 
     private void createButton() {
         setLayout(new MigLayout("wrap 1, insets 0",
@@ -147,11 +166,18 @@ public class ImageButton extends JPanel {
         shadow.setForeground(Color.black);
         shadow.setOpaque(false);
         add(shadow, "pos (label.x + 2) (label.y + 2)");
+        try {
+            ImageIcon icon = new ImageIcon(foregroundImage);
+            JLabel iconLabel = new JLabel(icon);
+            add(iconLabel, "pos " + foregroundImageXOffset + " 0");
+        } catch (NullPointerException e) {
+            e.printStackTrace();
+        }
         setPreferredSize(new Dimension(width,height));
         setMaximumSize(new Dimension(width,height));
     }
     
-    private void readVariables(int category, int buttonNumber) {
+    private void readVariables(int category, int buttonNumber) throws IOException {
         Ini.Section section = Main.CONFIG.get("Category" + category);
         text = section.get("button" + buttonNumber +"Text");
         action = section.get("button" + buttonNumber +"Action");
@@ -166,7 +192,6 @@ public class ImageButton extends JPanel {
         indentSteps = Main.TEXT_INDENT_STEPS;
         indentDuration = Main.TEXT_INDENT_DURATION;
         indentSleep = Main.TEXT_INDENT_SLEEP;
-        
         backgroundColorRInitial = Integer.parseInt(section.get("buttonBackgroundColorR_i"));
         backgroundColorGInitial = Integer.parseInt(section.get("buttonBackgroundColorG_i"));
         backgroundColorBInitial = Integer.parseInt(section.get("buttonBackgroundColorB_i"));
@@ -178,6 +203,13 @@ public class ImageButton extends JPanel {
         backgroundColorBFinal = Integer.parseInt(section.get("buttonBackgroundColorB_f"));
         backgroundColorAFinal = Integer.parseInt(section.get("buttonBackgroundColorA_f"));
         backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
+        
+        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
+        foregroundImageXOffset = Integer.parseInt(section.get("ForegroundImageXOffset"));
+        foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
+        foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
+        foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
+        foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
         
         fontColorRInitial = Integer.parseInt(section.get("buttonFontColorR_i"));
         fontColorGInitial = Integer.parseInt(section.get("buttonFontColorG_i"));

@@ -36,8 +36,6 @@ public class Category extends JPanel {
                 "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
         
-        loadImages();
-        
         header = new ImageButton(category);
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
@@ -49,24 +47,6 @@ public class Category extends JPanel {
         }
         add(buttonPanel);
     }
-    
-    public void loadImages() throws IOException {
-        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
-        foregroundImageXOffset = Integer.parseInt(section.get("ForegroundImageXOffset"));
-        foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
-        foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
-        foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
-        foregroundImageBounds = new int[] {foregroundImageXOffset, foregroundImageYOffset, foregroundImageXCrop, foregroundImageYCrop};
-    }
-    
-    public Image getForegroundImage() {
-        return foregroundImage;
-    }
-    
-    public int[] getForegroundImageBounds() {
-        return foregroundImageBounds;
-    }
-    
     public void collapseInstant() {
         buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
         header.isExpanded = false;
