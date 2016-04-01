@@ -1,6 +1,7 @@
 package p1;
 
 import java.awt.Color;
+import java.awt.Point;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,6 +30,8 @@ public class Main extends JFrame {
     public static final int EXPAND_STEPS;
     public static final int EXPAND_DURATION;
     public static final int EXPAND_SLEEP;
+    public static final int WIN_X;
+    public static final int WIN_Y;
     public static final Color CLEAR = new Color(0,0,0,0);
     public static Category[] categoryArray;
     static {
@@ -61,6 +64,8 @@ public class Main extends JFrame {
             EXPAND_STEPS = Integer.parseInt(SYSTEM.get("expandSteps"));
             EXPAND_DURATION = Integer.parseInt(SYSTEM.get("expandDuration"));
             EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
+            WIN_X = Integer.parseInt(SYSTEM.get("winX"));
+            WIN_Y = Integer.parseInt(SYSTEM.get("winY"));
         }
     private JPanel panel;
     private int numberOfCategories;
@@ -104,9 +109,11 @@ public class Main extends JFrame {
         
         setVisible(true);
 //        toBack();
+        setLocation(new Point(WIN_X, WIN_Y));
     }
     
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
+        new Clock();
         new Main();
     }
 }
