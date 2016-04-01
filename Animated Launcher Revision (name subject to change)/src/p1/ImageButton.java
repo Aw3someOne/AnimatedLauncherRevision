@@ -268,6 +268,7 @@ public class ImageButton extends JPanel {
     }
     
     private class BaseButtonMouseAdapter extends MouseAdapter {
+        @Override
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
             colorStepDownTimer.stop();
@@ -275,6 +276,7 @@ public class ImageButton extends JPanel {
             colorStepUpTimer.start();
         }
         
+        @Override
         public void mouseExited(MouseEvent e) {
             indentTimer.stop();
             colorStepUpTimer.stop();
@@ -284,7 +286,9 @@ public class ImageButton extends JPanel {
     }
     
     private class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
-        public void mouseClicked(MouseEvent e) {
+        
+        @Override
+        public void mouseReleased(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 try {
                     run();
@@ -309,7 +313,9 @@ public class ImageButton extends JPanel {
     }
     
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
-        public void mouseClicked(MouseEvent e) {
+        
+        @Override
+        public void mouseReleased(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 for (int i = 0; i < Main.categoryArray.length; i++) {
                     if (i != category) {
@@ -356,7 +362,7 @@ public class ImageButton extends JPanel {
     
     private void buttonTextStepIndent() {
         int xPos = label.getX();
-        int yPos = label.getY();
+//        int yPos = label.getY();
         indentCurrent = xPos + 1;
         add(label, "id label, pos " + indentCurrent + " 0.5al");
         add(shadow, "pos (label.x + 2) (label.y + 2)");
@@ -368,7 +374,7 @@ public class ImageButton extends JPanel {
     
     private void buttonTextStepUnindent() {
         int xPos = label.getX();
-        int yPos = label.getY();
+//        int yPos = label.getY();
         indentCurrent = xPos - 1;
         add(label, "id label, pos " + indentCurrent + " 0.5al");
         add(shadow, "pos (label.x + 2) (label.y + 2)");
