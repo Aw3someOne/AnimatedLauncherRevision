@@ -113,6 +113,9 @@ public class ImageButton extends JPanel {
         colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
         colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
+        
+//        Makes the panels slide instead of accordion effect
+        setMinimumSize(new Dimension(width, height));
     }
     
     public ImageButton(int category) {
@@ -154,10 +157,10 @@ public class ImageButton extends JPanel {
         backgroundColorBCurrent = backgroundColorBInitial;
         backgroundColorACurrent = backgroundColorAInitial;
         indentCurrent = indent;
-        backgroundColorRStep = (backgroundColorRFinal - backgroundColorRInitial) / indentSteps;
-        backgroundColorGStep = (backgroundColorGFinal - backgroundColorGInitial) / indentSteps;
-        backgroundColorBStep = (backgroundColorBFinal - backgroundColorBInitial) / indentSteps;
-        backgroundColorAStep = (backgroundColorAFinal - backgroundColorAInitial) / indentSteps;
+        backgroundColorRStep = (double) (backgroundColorRFinal - backgroundColorRInitial) / indentSteps;
+        backgroundColorGStep = (double) (backgroundColorGFinal - backgroundColorGInitial) / indentSteps;
+        backgroundColorBStep = (double) (backgroundColorBFinal - backgroundColorBInitial) / indentSteps;
+        backgroundColorAStep = (double) (backgroundColorAFinal - backgroundColorAInitial) / indentSteps;
         label = new JLabel(text);
         label.setFont(font);
         label.setForeground(fontColorInitial);
@@ -434,6 +437,7 @@ public class ImageButton extends JPanel {
     private class IndentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("indent timer");
             if (label.getX() < indent + indentSteps) {
                 buttonTextStepIndent();
             } else {
@@ -445,6 +449,7 @@ public class ImageButton extends JPanel {
     private class UnindentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("unindent timer");
             if (label.getX() > indent) {
                 buttonTextStepUnindent();
             } else {
@@ -456,6 +461,7 @@ public class ImageButton extends JPanel {
     private class ColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("color up timer");
             if (!backgroundColorCurrent.equals(backgroundColorFinal)) {
                 if (backgroundColorRStep > 0 && backgroundColorRCurrent < backgroundColorRFinal) {
                     redStepUp();
@@ -478,10 +484,10 @@ public class ImageButton extends JPanel {
                     alphaStepUp();
                 }
                 backgroundColorCurrent = new Color(
-                        (int) backgroundColorRCurrent,
-                        (int) backgroundColorGCurrent,
-                        (int) backgroundColorBCurrent,
-                        (int) backgroundColorACurrent);
+                        (int) Math.round(backgroundColorRCurrent),
+                        (int) Math.round(backgroundColorGCurrent),
+                        (int) Math.round(backgroundColorBCurrent),
+                        (int) Math.round(backgroundColorACurrent));
                 repaint();
             } else {
                 colorStepUpTimer.stop();
@@ -492,6 +498,7 @@ public class ImageButton extends JPanel {
     private class ColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("color down timer");
             if (!backgroundColorCurrent.equals(backgroundColorInitial)) {
                 if (backgroundColorRStep > 0 && backgroundColorRCurrent > backgroundColorRInitial) {
                     redStepDown();
@@ -514,10 +521,10 @@ public class ImageButton extends JPanel {
                     alphaStepDown();
                 }
                 backgroundColorCurrent = new Color(
-                        (int) backgroundColorRCurrent,
-                        (int) backgroundColorGCurrent,
-                        (int) backgroundColorBCurrent,
-                        (int) backgroundColorACurrent);
+                        (int) Math.round(backgroundColorRCurrent),
+                        (int) Math.round(backgroundColorGCurrent),
+                        (int) Math.round(backgroundColorBCurrent),
+                        (int) Math.round(backgroundColorACurrent));
                 repaint();
             } else {
                 colorStepDownTimer.stop();
@@ -528,6 +535,7 @@ public class ImageButton extends JPanel {
     private class ExpandTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("expand timer");
             if (getParent().getComponent(1).getHeight() < parentMaxHeight) {
                 expand();
             } else {
@@ -539,6 +547,7 @@ public class ImageButton extends JPanel {
     private class CollapseTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+//            System.out.println("collapse timer");
             if (getParent().getComponent(1).getHeight() > 0) {
                 collapse();
             } else {
@@ -552,7 +561,7 @@ public class ImageButton extends JPanel {
     }
     
     private double forceRGB(double i) {
-        return Math.min(255, Math.max(0, i));
+        return Math.min(255.0, Math.max(0.0, i));
     }
     
     public void setExpandStepAmount(int step) {
