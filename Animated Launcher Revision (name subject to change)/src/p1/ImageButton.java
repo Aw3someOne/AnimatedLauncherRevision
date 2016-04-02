@@ -99,6 +99,9 @@ public class ImageButton extends JPanel {
     private Font font;
     
     boolean isExpanded = true;
+    private int expandStepAmount;
+    private int collapseStepAmount;
+    private int parentMaxHeight;
     
     public ImageButton(int category, int buttonNumber) throws IOException {
         this.category = category;
@@ -417,16 +420,14 @@ public class ImageButton extends JPanel {
     }
     
     private void expand() {
-        int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
-                getParent().getComponent(1).getHeight() + stepAmount));
+                getParent().getComponent(1).getHeight() + expandStepAmount));
         revalidate();
     }
     
     private void collapse() {
-        int stepAmount = ((Category) getParent()).getMaxHeight() / Main.EXPAND_STEPS;
         getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
-                getParent().getComponent(1).getHeight() - stepAmount));
+                getParent().getComponent(1).getHeight() - collapseStepAmount));
         revalidate();
     }
     
@@ -527,7 +528,7 @@ public class ImageButton extends JPanel {
     private class ExpandTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (getParent().getComponent(1).getHeight() < ((Category) getParent()).getMaxHeight()) {
+            if (getParent().getComponent(1).getHeight() < parentMaxHeight) {
                 expand();
             } else {
                 expandTimer.stop();
@@ -552,5 +553,17 @@ public class ImageButton extends JPanel {
     
     private double forceRGB(double i) {
         return Math.min(255, Math.max(0, i));
+    }
+    
+    public void setExpandStepAmount(int step) {
+        expandStepAmount = step;
+    }
+    
+    public void setCollapseStepAmount(int step) {
+        collapseStepAmount = step;
+    }
+    
+    public void setParentMaxHeight(int height) {
+        parentMaxHeight = height;
     }
 }

@@ -26,6 +26,8 @@ public class Category extends JPanel {
     private int foregroundImageYCrop;
     private int[] foregroundImageBounds;
     private Ini.Section section;
+    private int expandStepAmount;
+    private int collapseStepAmount;
     
     public Category(int category) throws IOException {
         this.category = category;
@@ -63,7 +65,20 @@ public class Category extends JPanel {
         return maxHeight;
     }
     
+    public int getExpandStepAmount() {
+        return expandStepAmount;
+    }
+    
+    public int getCollapseStepAmount() {
+        return collapseStepAmount;
+    }
+    
     public void calculateMaxHeight() {
         maxHeight = buttonPanel.getHeight();
+        expandStepAmount = maxHeight / Main.EXPAND_STEPS;
+        collapseStepAmount = maxHeight / Main.EXPAND_STEPS;
+        header.setParentMaxHeight(maxHeight);
+        header.setExpandStepAmount(expandStepAmount);
+        header.setCollapseStepAmount(collapseStepAmount);
     }
 }
