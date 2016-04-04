@@ -42,13 +42,13 @@ public class Main extends JFrame {
                 ini = new Ini(fr);
             } catch (IOException e) {
                 // default settings ini
+                e.printStackTrace();
                 InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
                 try {
                     ini = new Ini(stream);
                 } catch (IOException e1) {
                     e1.printStackTrace();
                 }
-                e.printStackTrace();
             }
             CONFIG = ini;
             SYSTEM = CONFIG.get("System");
