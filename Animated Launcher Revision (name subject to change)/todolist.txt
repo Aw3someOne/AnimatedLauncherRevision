@@ -1,0 +1,13 @@
+REFACTORING:
+make HeaderButton class do something useful instead of just instantiating ImageButton
+
+FEATURES TO ADD:
+configuration program
+background image on buttons
+custom spacing between buttons
+color gradients?
+
+BUGS/ERRORS:
+borks if numbers go out of range of the image dimensions
+expanding/collapsing bugs out slightly when you trigger another listener while it's expanding/collapsing. Probably something to do with revalidation.
+doesn't like paths with backslashes
