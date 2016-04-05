@@ -41,7 +41,7 @@ public class Main extends JFrame {
                 fr = new FileReader("config.ini");
                 ini = new Ini(fr);
             } catch (IOException e) {
-                // default settings ini
+                // loads included default config.ini if config.ini does not exist
                 e.printStackTrace();
                 InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
                 try {
@@ -50,6 +50,7 @@ public class Main extends JFrame {
                     e1.printStackTrace();
                 }
             }
+            // Reads constants from config.ini
             CONFIG = ini;
             SYSTEM = CONFIG.get("System");
             HEADER_WIDTH = Integer.parseInt(SYSTEM.get("headerWidth"));
@@ -108,6 +109,7 @@ public class Main extends JFrame {
         }
         
         setVisible(true);
+//         Places window on the desktop. Commented out to make testing less annoying.
 //        toBack();
         setLocation(new Point(WIN_X, WIN_Y));
     }

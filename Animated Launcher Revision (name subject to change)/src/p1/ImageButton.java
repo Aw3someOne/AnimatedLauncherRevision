@@ -113,9 +113,6 @@ public class ImageButton extends JPanel {
         colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
         colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
         addMouseListener(new ImageButtonMouseAdapter());
-        
-//        Makes the panels slide instead of accordion effect
-        setMinimumSize(new Dimension(width, height));
     }
     
     public ImageButton(int category) {
@@ -136,6 +133,9 @@ public class ImageButton extends JPanel {
         Graphics2D gui = (Graphics2D)g;
         gui.setBackground(backgroundColorCurrent);
         gui.clearRect(0, 0, width, height);
+        
+//Deprecated code that allows out of range values without breaking, but it runs like crap
+        
 //        g.drawImage(foregroundImage, 0, 0, this);
 //        gui.drawImage(foregroundImage,
 //                foregroundImageXOffset, foregroundImageYOffset, width + foregroundImageXOffset, height + foregroundImageYOffset,
@@ -179,7 +179,8 @@ public class ImageButton extends JPanel {
         } catch (NullPointerException e) {
             e.printStackTrace();
         }
-        setMinimumSize(new Dimension(0,0));
+//      Makes the panels slide instead of accordion effect
+        setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width,height));
         setMaximumSize(new Dimension(width,height));
     }
@@ -274,6 +275,7 @@ public class ImageButton extends JPanel {
     }
     
     private class BaseButtonMouseAdapter extends MouseAdapter {
+        
         @Override
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
