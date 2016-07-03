@@ -4,7 +4,7 @@ make HeaderButton class do something useful instead of just instantiating ImageB
 FEATURES TO ADD:
 configuration program
 background image on buttons
-custom spacing between buttons
+custom spacing between buttons - leaves stupid background thing
 color gradients?
 
 BUGS/ERRORS:

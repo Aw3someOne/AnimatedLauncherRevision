@@ -34,36 +34,36 @@ public class ImageButton extends JPanel {
     
     private int category;
     private int buttonNumber;
-    private String text;
+    protected String text;
     private String action;
-    private int width;
-    private int height;
+    protected int width;
+    protected int height;
     
-    private int backgroundColorRInitial;
-    private int backgroundColorGInitial;
-    private int backgroundColorBInitial;
-    private int backgroundColorAInitial;
-    private Color backgroundColorInitial;
+    protected int backgroundColorRInitial;
+    protected int backgroundColorGInitial;
+    protected int backgroundColorBInitial;
+    protected int backgroundColorAInitial;
+    protected Color backgroundColorInitial;
     
-    private double backgroundColorRCurrent;
-    private double backgroundColorGCurrent;
-    private double backgroundColorBCurrent;
-    private double backgroundColorACurrent;
-    private Color backgroundColorCurrent;
+    protected double backgroundColorRCurrent;
+    protected double backgroundColorGCurrent;
+    protected double backgroundColorBCurrent;
+    protected double backgroundColorACurrent;
+    protected Color backgroundColorCurrent;
     
-    private int backgroundColorRFinal;
-    private int backgroundColorGFinal;
-    private int backgroundColorBFinal;
-    private int backgroundColorAFinal;
+    protected int backgroundColorRFinal;
+    protected int backgroundColorGFinal;
+    protected int backgroundColorBFinal;
+    protected int backgroundColorAFinal;
     private Color backgroundColorFinal;
    
-    private double backgroundColorRStep;
-    private double backgroundColorGStep;
-    private double backgroundColorBStep;
-    private double backgroundColorAStep;
+    protected double backgroundColorRStep;
+    protected double backgroundColorGStep;
+    protected double backgroundColorBStep;
+    protected double backgroundColorAStep;
 
-    private BufferedImage foregroundImage;
-    private int foregroundImageXOffset;
+    protected BufferedImage foregroundImage;
+    protected int foregroundImageXOffset;
     private int foregroundImageYOffset;
     private int foregroundImageXCrop;
     private int foregroundImageYCrop;
@@ -75,7 +75,7 @@ public class ImageButton extends JPanel {
     private int fontColorGInitial;
     private int fontColorBInitial;
     private int fontColorAInitial;
-    private Color fontColorInitial;
+    protected Color fontColorInitial;
     
     private int fontColorRFinal;
     private int fontColorGFinal;
@@ -83,9 +83,9 @@ public class ImageButton extends JPanel {
     private int fontColorAFinal;
     private Color fontColorFinal;
     
-    private int indent;
-    private int indentCurrent;
-    private int indentSteps;
+    protected int indent;
+    protected int indentCurrent;
+    protected int indentSteps;
     private int indentDuration;
     private int indentSleep;
     private Timer indentTimer;
@@ -96,7 +96,7 @@ public class ImageButton extends JPanel {
     Timer expandTimer;
     Timer collapseTimer;
     
-    private Font font;
+    protected Font font;
     
     boolean isExpanded = true;
     private int expandStepAmount;
@@ -147,7 +147,7 @@ public class ImageButton extends JPanel {
 //        g.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
 //    }
 
-    private void createButton() {
+    protected void createButton() {
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + width + "]",
                 "[fill," + height + "]"));
@@ -236,19 +236,17 @@ public class ImageButton extends JPanel {
         Ini.Section section = Main.CONFIG.get("Category" + category);
         text = section.get("headerText");
         width = Main.HEADER_WIDTH;
-        
         height = Main.HEADER_HEIGHT;
         
         String fontFace = section.get("headerFontFace");
         int fontSize = Integer.parseInt(section.get("headerFontSize"));
         
-        indent = Main.TEXT_INDENT;
+        font = new Font(fontFace, Font.PLAIN, fontSize);
+        indent = Main.HEADER_TEXT_INDENT;
         indentSteps = Main.TEXT_INDENT_STEPS;
         indentDuration = Main.TEXT_INDENT_DURATION;
         indentSleep = Main.TEXT_INDENT_SLEEP;
         
-        font = new Font(fontFace, Font.PLAIN, fontSize);
-        indent = Main.HEADER_TEXT_INDENT;
         backgroundColorRInitial = Integer.parseInt(section.get("headerBackgroundColorR_i"));
         backgroundColorGInitial = Integer.parseInt(section.get("headerBackgroundColorG_i"));
         backgroundColorBInitial = Integer.parseInt(section.get("headerBackgroundColorB_i"));

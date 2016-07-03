@@ -22,6 +22,7 @@ public class Main extends JFrame {
     public static final int HEADER_HEIGHT;
     public static final int BUTTON_WIDTH;
     public static final int BUTTON_HEIGHT;
+    public static final int BUTTON_SPACING;
     public static final int HEADER_TEXT_INDENT;
     public static final int TEXT_INDENT;
     public static final int TEXT_INDENT_STEPS;
@@ -57,6 +58,7 @@ public class Main extends JFrame {
             HEADER_HEIGHT = Integer.parseInt(SYSTEM.get("headerHeight"));
             BUTTON_WIDTH = Integer.parseInt(SYSTEM.get("buttonWidth"));
             BUTTON_HEIGHT = Integer.parseInt(SYSTEM.get("buttonHeight"));
+            BUTTON_SPACING = Integer.parseInt(SYSTEM.get("buttonSpacing"));
             HEADER_TEXT_INDENT = Integer.parseInt(SYSTEM.get("headerTextIndent"));
             TEXT_INDENT = Integer.parseInt(SYSTEM.get("textIndent"));
             TEXT_INDENT_STEPS = Integer.parseInt(SYSTEM.get("textIndentSteps"));
@@ -85,6 +87,7 @@ public class Main extends JFrame {
         panel = new JPanel(new MigLayout("wrap 1, insets 0",
                 "[fill]0",
                 "[fill]0"));
+        panel.setBackground(CLEAR);
         
         numberOfCategories = Integer.parseInt(SYSTEM.get("numberOfCategories"));
         categoryArray = new Category[numberOfCategories];

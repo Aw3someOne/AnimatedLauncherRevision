@@ -6,4 +6,5 @@ public class HeaderButton extends ImageButton {
     public HeaderButton(int category) {
         super(category);
     }
+
 }

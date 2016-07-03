@@ -31,7 +31,7 @@ public class Category extends JPanel {
     
     public Category(int category) throws IOException {
         this.category = category;
-        section = Main.CONFIG.get("Category" + category);
+        section = Main.CONFIG.get("Category" + this.category);
         this.numberOfButtons = Integer.parseInt(section.get("numberOfButtons"));
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + Main.HEADER_WIDTH + "]",
@@ -42,7 +42,8 @@ public class Category extends JPanel {
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
                 "[grow, fill," + Main.HEADER_WIDTH + "]",
-                "[grow, fill," + Main.BUTTON_HEIGHT + "]0"));
+                "[grow, fill," + Main.BUTTON_HEIGHT + "]" + Main.BUTTON_SPACING + "[grow, fill," + Main.BUTTON_HEIGHT + "]"));
+        buttonPanel.setBackground(Main.CLEAR);
         for (int i = 0; i < numberOfButtons; i++) {
             ImageButton button = new ImageButton(category, i);
             buttonPanel.add(button);
