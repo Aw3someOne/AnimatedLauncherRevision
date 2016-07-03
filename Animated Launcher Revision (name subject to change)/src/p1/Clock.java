@@ -12,7 +12,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.font.FontRenderContext;
 import java.awt.geom.AffineTransform;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -36,9 +35,9 @@ public class Clock extends JFrame {
     private static final GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private static final Font DIGITAL_7_MONO_ITALIC = createFont("Digital-7 (mono italic fixed).ttf");
     private static final Font MICHROMA = createFont("Michroma.ttf");
-    private static final Font clockFont = DIGITAL_7_MONO_ITALIC.deriveFont(Font.PLAIN, CLOCK_FONT_SIZE);
-    private static final Font secondsFont = DIGITAL_7_MONO_ITALIC.deriveFont(Font.PLAIN, SMALL_FONT_SIZE);
-    private static final Font dateFont = MICHROMA.deriveFont(Font.PLAIN, TEXT_SIZE);
+    private static final Font CLOCK_FONT = DIGITAL_7_MONO_ITALIC.deriveFont(Font.PLAIN, CLOCK_FONT_SIZE);
+    private static final Font SECONDS_FONT = DIGITAL_7_MONO_ITALIC.deriveFont(Font.PLAIN, SMALL_FONT_SIZE);
+    private static final Font DATE_FONT = MICHROMA.deriveFont(Font.PLAIN, TEXT_SIZE);
     private static final DateFormat TIME_FORMAT = new SimpleDateFormat("h:mm");
     private static final DateFormat MILITARY_TIME_FORMAT = new SimpleDateFormat("HH:mm");
     private static final DateFormat SECONDS_FORMAT = new SimpleDateFormat("ss");
@@ -62,8 +61,8 @@ public class Clock extends JFrame {
         
         AffineTransform affinetransform = new AffineTransform();
         FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-        Dimension clockSize = new Dimension((int) clockFont.getStringBounds("00:00", frc).getWidth()+10, (int) getFontMetrics(clockFont).getHeight());
-        Dimension secondsSize = new Dimension((int) secondsFont.getStringBounds("00", frc).getWidth()+10, (int) getFontMetrics(secondsFont).getHeight());
+        Dimension clockSize = new Dimension((int) CLOCK_FONT.getStringBounds("00:00", frc).getWidth()+10, (int) getFontMetrics(CLOCK_FONT).getHeight());
+        Dimension secondsSize = new Dimension((int) SECONDS_FONT.getStringBounds("00", frc).getWidth()+10, (int) getFontMetrics(SECONDS_FONT).getHeight());
         
         currentTimeFormat = TIME_FORMAT;
         
@@ -79,7 +78,7 @@ public class Clock extends JFrame {
         rightPanel.setBackground(CLEAR);
         
         time = new JLabel(TIME_FORMAT.format(date), SwingConstants.RIGHT);
-        time.setFont(clockFont);
+        time.setFont(CLOCK_FONT);
         time.setForeground(Color.BLACK);
         time.addMouseListener(new ClockMouseAdapter());
         time.setMinimumSize(clockSize);
@@ -88,13 +87,13 @@ public class Clock extends JFrame {
         panel.add(time, "align right top");
         
         seconds = new JLabel(SECONDS_FORMAT.format(date), SwingConstants.RIGHT);
-        seconds.setFont(secondsFont);
+        seconds.setFont(SECONDS_FONT);
         seconds.setForeground(Color.BLACK);
         seconds.setMinimumSize(secondsSize);
         rightPanel.add(seconds, "align right, wrap");
         
         ampm = new JLabel(AMPM_FORMAT.format(date), SwingConstants.RIGHT);
-        ampm.setFont(secondsFont);
+        ampm.setFont(SECONDS_FONT);
         ampm.setForeground(Color.BLACK);
         ampm.setMinimumSize(secondsSize);
         rightPanel.add(ampm, "align right");
@@ -102,7 +101,7 @@ public class Clock extends JFrame {
         panel.add(rightPanel);
         
         dayOfTheYear = new JLabel(DAY_OF_THE_YEAR_FORMAT.format(date), SwingConstants.RIGHT);
-        dayOfTheYear.setFont(dateFont);
+        dayOfTheYear.setFont(DATE_FONT);
         dayOfTheYear.setForeground(Color.BLACK);
         panel.add(dayOfTheYear, "span 2, align right");
         
