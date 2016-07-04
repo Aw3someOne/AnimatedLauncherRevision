@@ -61,7 +61,7 @@ public class Theme {
             valueMap.put("buttonWidth", 600);
             valueMap.put("buttonHeight", 30);
             valueMap.put("buttonSpacing", 0);
-            valueMap.put("imageBound", 700);
+            valueMap.put("imageBound", 750);
             valueMap.put("headerTextIndent", 15);
             valueMap.put("textIndent", 25);
             valueMap.put("textIndentSteps", 25);
@@ -74,7 +74,7 @@ public class Theme {
             valueMap.put("Category1ForegroundImageXOffset", 275);
             valueMap.put("Category2ForegroundImageXOffset", 275);
             try {
-                imageMap.put(0, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/kaori1.png")));
+                imageMap.put(0, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/kaori3.png")));
                 imageMap.put(1, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/kaori2.png")));
                 imageMap.put(2, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/kaori1.png")));
             } catch (IOException e1) {

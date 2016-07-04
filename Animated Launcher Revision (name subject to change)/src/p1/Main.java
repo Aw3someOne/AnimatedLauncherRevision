@@ -2,6 +2,7 @@ package p1;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
 import java.awt.Point;
 import java.io.FileReader;
 import java.io.IOException;
@@ -108,7 +109,7 @@ public class Main extends JFrame {
         
         categoryArray = new Category[NUMBER_OF_CATEGORIES];
         for (int i = 0; i < NUMBER_OF_CATEGORIES; i++) {
-            Category category = new Category(i);
+            Category category = new Category(i, this);
             categoryArray[i] = category;
             panel.add(category);
         }
@@ -116,7 +117,6 @@ public class Main extends JFrame {
         getContentPane().add(panel);
         
         pack();
-        
         setVisible(false);
         
         for (Category cat : categoryArray) {
@@ -132,7 +132,7 @@ public class Main extends JFrame {
 //        toBack();
         setLocation(new Point(WIN_X, WIN_Y));
     }
-    
+
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
         new Clock();
         new Main();
