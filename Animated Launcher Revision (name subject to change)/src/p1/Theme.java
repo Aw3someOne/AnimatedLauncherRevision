@@ -1,6 +1,7 @@
 package p1;
 
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,6 +29,31 @@ public class Theme {
         imageMap = new HashMap<Integer, BufferedImage>();
         switch(themeName) {
         case STEINS_GATE:
+            valueMap.put("headerWidth", 600);
+            valueMap.put("headerHeight", 50);
+            valueMap.put("buttonWidth", 600);
+            valueMap.put("buttonHeight", 30);
+            valueMap.put("buttonSpacing", 0);
+            valueMap.put("imageBound", 600);
+            valueMap.put("headerTextIndent", 15);
+            valueMap.put("textIndent", 25);
+            valueMap.put("textIndentSteps", 25);
+            valueMap.put("textIndentDuration", 100);
+            valueMap.put("expandSteps", 25);
+            valueMap.put("expandDuration", 200);
+            valueMap.put("winX", 20);
+            valueMap.put("winY", 200);
+            valueMap.put("Category0ForegroundImageXOffset", 200);
+            valueMap.put("Category1ForegroundImageXOffset", 260);
+            valueMap.put("Category2ForegroundImageXOffset", 300);
+            try {
+                imageMap.put(0, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/crs_asa01a.png")));
+                imageMap.put(1, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/crs_asb02a.png")));
+                imageMap.put(2, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/crs_asc02a.png")));
+            } catch (IOException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            }
             break;
         case YOUR_LIE_IN_APRIL:
             valueMap.put("headerWidth", 600);
@@ -78,9 +104,9 @@ public class Theme {
             valueMap.put("Category1ForegroundImageXOffset", Integer.parseInt(section1.get("ForegroundImageXOffset")));
             valueMap.put("Category2ForegroundImageXOffset", Integer.parseInt(section2.get("ForegroundImageXOffset")));
             try {
-                imageMap.put(0, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/" + section0.get("ForegroundImage"))));
-                imageMap.put(1, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/" + section1.get("ForegroundImage"))));
-                imageMap.put(2, ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/" + section2.get("ForegroundImage"))));
+                imageMap.put(0, ImageIO.read(new File(section0.get("ForegroundImage"))));
+                imageMap.put(1, ImageIO.read(new File(section1.get("ForegroundImage"))));
+                imageMap.put(2, ImageIO.read(new File(section2.get("ForegroundImage"))));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

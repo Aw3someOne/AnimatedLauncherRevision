@@ -2,6 +2,8 @@ package p1;
 
 import java.awt.Color;
 import java.awt.Dimension;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.io.File;
 import java.io.IOException;
@@ -59,6 +61,14 @@ public class Category extends JPanel {
             add(blackBar);
         }
     }
+    
+    public void paintComponent(Graphics g) {
+        super.paintComponent(g);
+        Graphics2D gui = (Graphics2D)g;
+        gui.setBackground(Main.CLEAR);
+        gui.clearRect(0, 0, this.getWidth(), this.getHeight());
+    }
+    
     public void collapseInstant() {
         buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
         header.isExpanded = false;
