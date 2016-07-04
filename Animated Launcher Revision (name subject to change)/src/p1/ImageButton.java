@@ -31,7 +31,7 @@ import net.miginfocom.swing.MigLayout;
 
 public class ImageButton extends JPanel {
     
-    private int category;
+    protected int category;
     private int buttonNumber;
     protected String text;
     private String action;
@@ -54,7 +54,7 @@ public class ImageButton extends JPanel {
     protected int backgroundColorGFinal;
     protected int backgroundColorBFinal;
     protected int backgroundColorAFinal;
-    private Color backgroundColorFinal;
+    protected Color backgroundColorFinal;
    
     protected double backgroundColorRStep;
     protected double backgroundColorGStep;
@@ -70,23 +70,23 @@ public class ImageButton extends JPanel {
     JLabel label;
     JLabel shadow;
     
-    private int fontColorRInitial;
-    private int fontColorGInitial;
-    private int fontColorBInitial;
-    private int fontColorAInitial;
+    protected int fontColorRInitial;
+    protected int fontColorGInitial;
+    protected int fontColorBInitial;
+    protected int fontColorAInitial;
     protected Color fontColorInitial;
     
-    private int fontColorRFinal;
-    private int fontColorGFinal;
-    private int fontColorBFinal;
-    private int fontColorAFinal;
-    private Color fontColorFinal;
+    protected int fontColorRFinal;
+    protected int fontColorGFinal;
+    protected int fontColorBFinal;
+    protected int fontColorAFinal;
+    protected Color fontColorFinal;
     
     protected int indent;
     protected int indentCurrent;
     protected int indentSteps;
-    private int indentDuration;
-    private int indentSleep;
+    protected int indentDuration;
+    protected int indentSleep;
     private Timer indentTimer;
     private Timer unindentTimer;
     private Timer colorStepUpTimer;
@@ -96,13 +96,8 @@ public class ImageButton extends JPanel {
     Timer collapseTimer;
     
     protected Font font;
+    protected int buttonWidth;
     
-    boolean isExpanded = true;
-    private int expandStepAmount;
-    private int collapseStepAmount;
-    private int parentMaxHeight;
-    private int buttonWidth;
-    private int imageBound;
     
     public ImageButton(int category, int buttonNumber) throws IOException {
         this.category = category;
@@ -113,20 +108,9 @@ public class ImageButton extends JPanel {
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
         colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
         colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
-        addMouseListener(new ImageButtonMouseAdapter());
-    }
-    
-    public ImageButton(int category) {
-        this.category = category;
-        readVariables(category);
-        createButton();
-        indentTimer = new Timer(indentSleep, new IndentTimerListener());
-        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
-        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
-        expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
-        collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
-        addMouseListener(new HeaderButtonMouseAdapter());
+        if (buttonNumber != -1) {
+            addMouseListener(new ImageButtonMouseAdapter());
+        }
     }
     
     public void paintComponent(Graphics g) {
@@ -190,91 +174,62 @@ public class ImageButton extends JPanel {
     
     private void readVariables(int category, int buttonNumber) throws IOException {
         Ini.Section section = Main.CONFIG.get("Category" + category);
-        text = section.get("button" + buttonNumber +"Text");
-        action = section.get("button" + buttonNumber +"Action");
         buttonWidth = Main.BUTTON_WIDTH;
-        imageBound = Main.IMAGE_BOUND;
         width = Math.max(Main.BUTTON_WIDTH, Main.IMAGE_BOUND);
         height = Main.BUTTON_HEIGHT;
-        
-        String fontFace = section.get("buttonFontFace");
-        int fontSize = Integer.parseInt(section.get("buttonFontSize"));
-        
-        font = new Font(fontFace, Font.PLAIN, fontSize);
         indent = Main.TEXT_INDENT;
         indentSteps = Main.TEXT_INDENT_STEPS;
         indentDuration = Main.TEXT_INDENT_DURATION;
         indentSleep = Main.TEXT_INDENT_SLEEP;
-        backgroundColorRInitial = Integer.parseInt(section.get("buttonBackgroundColorR_i"));
-        backgroundColorGInitial = Integer.parseInt(section.get("buttonBackgroundColorG_i"));
-        backgroundColorBInitial = Integer.parseInt(section.get("buttonBackgroundColorB_i"));
-        backgroundColorAInitial = Integer.parseInt(section.get("buttonBackgroundColorA_i"));
-        backgroundColorInitial = new Color(backgroundColorRInitial, backgroundColorGInitial, backgroundColorBInitial, backgroundColorAInitial);
         
-        backgroundColorRFinal = Integer.parseInt(section.get("buttonBackgroundColorR_f"));
-        backgroundColorGFinal = Integer.parseInt(section.get("buttonBackgroundColorG_f"));
-        backgroundColorBFinal = Integer.parseInt(section.get("buttonBackgroundColorB_f"));
-        backgroundColorAFinal = Integer.parseInt(section.get("buttonBackgroundColorA_f"));
-        backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
+        String buttonType;
+        if (buttonNumber == -1) {
+            buttonType = "header";
+            buttonWidth = Main.HEADER_WIDTH;
+            width = Main.HEADER_WIDTH;
+            height = Main.HEADER_HEIGHT;
+            indent = Main.HEADER_TEXT_INDENT;
+            indentSteps = Main.TEXT_INDENT_STEPS;
+            indentDuration = Main.TEXT_INDENT_DURATION;
+            indentSleep = Main.TEXT_INDENT_SLEEP;
+        } else {
+            buttonType = "button";
+            action = section.get("button" + buttonNumber +"Action");
+            foregroundImage = Main.THEME.getImage(category);
+            foregroundImageXOffset = Main.THEME.get("Category" + category + "ForegroundImageXOffset");
+            foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
+            foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
+            foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
+            foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
+        }
         
-        foregroundImage = Main.THEME.getImage(category);
-        foregroundImageXOffset = Main.THEME.get("Category" + category + "ForegroundImageXOffset");
-        foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
-        foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
-        foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
-        foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
-        
-        fontColorRInitial = Integer.parseInt(section.get("buttonFontColorR_i"));
-        fontColorGInitial = Integer.parseInt(section.get("buttonFontColorG_i"));
-        fontColorBInitial = Integer.parseInt(section.get("buttonFontColorB_i"));
-        fontColorAInitial = Integer.parseInt(section.get("buttonFontColorA_i"));
-        fontColorInitial = new Color(fontColorRInitial, fontColorGInitial, fontColorBInitial, fontColorAInitial);
-        
-        fontColorRFinal = Integer.parseInt(section.get("buttonFontColorR_f"));
-        fontColorGFinal = Integer.parseInt(section.get("buttonFontColorG_f"));
-        fontColorBFinal = Integer.parseInt(section.get("buttonFontColorB_f"));
-        fontColorAFinal = Integer.parseInt(section.get("buttonFontColorA_f"));
-        fontColorFinal = new Color(fontColorRFinal, fontColorGFinal, fontColorBFinal, fontColorAFinal);
-    }
-    
-    private void readVariables(int category) {
-        Ini.Section section = Main.CONFIG.get("Category" + category);
-        text = section.get("headerText");
-        buttonWidth = Main.HEADER_WIDTH;
-        width = Main.HEADER_WIDTH;
-        height = Main.HEADER_HEIGHT;
-        
-        String fontFace = section.get("headerFontFace");
-        int fontSize = Integer.parseInt(section.get("headerFontSize"));
+        text = section.get(buttonType + ((buttonNumber == -1) ? "" : buttonNumber) + "Text");
+        String fontFace = section.get(buttonType + "FontFace");
+        int fontSize = Integer.parseInt(section.get(buttonType + "FontSize"));
         
         font = new Font(fontFace, Font.PLAIN, fontSize);
-        indent = Main.HEADER_TEXT_INDENT;
-        indentSteps = Main.TEXT_INDENT_STEPS;
-        indentDuration = Main.TEXT_INDENT_DURATION;
-        indentSleep = Main.TEXT_INDENT_SLEEP;
-        
-        backgroundColorRInitial = Integer.parseInt(section.get("headerBackgroundColorR_i"));
-        backgroundColorGInitial = Integer.parseInt(section.get("headerBackgroundColorG_i"));
-        backgroundColorBInitial = Integer.parseInt(section.get("headerBackgroundColorB_i"));
-        backgroundColorAInitial = Integer.parseInt(section.get("headerBackgroundColorA_i"));
+        backgroundColorRInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorR_i"));
+        backgroundColorGInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorG_i"));
+        backgroundColorBInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorB_i"));
+        backgroundColorAInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorA_i"));
         backgroundColorInitial = new Color(backgroundColorRInitial, backgroundColorGInitial, backgroundColorBInitial, backgroundColorAInitial);
         
-        backgroundColorRFinal = Integer.parseInt(section.get("headerBackgroundColorR_f"));
-        backgroundColorGFinal = Integer.parseInt(section.get("headerBackgroundColorG_f"));
-        backgroundColorBFinal = Integer.parseInt(section.get("headerBackgroundColorB_f"));
-        backgroundColorAFinal = Integer.parseInt(section.get("headerBackgroundColorA_f"));
+        backgroundColorRFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorR_f"));
+        backgroundColorGFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorG_f"));
+        backgroundColorBFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorB_f"));
+        backgroundColorAFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorA_f"));
         backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
         
-        fontColorRInitial = Integer.parseInt(section.get("headerFontColorR_i"));
-        fontColorGInitial = Integer.parseInt(section.get("headerFontColorG_i"));
-        fontColorBInitial = Integer.parseInt(section.get("headerFontColorB_i"));
-        fontColorAInitial = Integer.parseInt(section.get("headerFontColorA_i"));
+        fontColorRInitial = Integer.parseInt(section.get(buttonType + "FontColorR_i"));
+        fontColorGInitial = Integer.parseInt(section.get(buttonType + "FontColorG_i"));
+        fontColorBInitial = Integer.parseInt(section.get(buttonType + "FontColorB_i"));
+        fontColorAInitial = Integer.parseInt(section.get(buttonType + "FontColorA_i"));
         fontColorInitial = new Color(fontColorRInitial, fontColorGInitial, fontColorBInitial, fontColorAInitial);
         
-        fontColorRFinal = Integer.parseInt(section.get("headerFontColorR_f"));
-        fontColorGFinal = Integer.parseInt(section.get("headerFontColorG_f"));
-        fontColorBFinal = Integer.parseInt(section.get("headerFontColorB_f"));
-        fontColorAFinal = Integer.parseInt(section.get("headerFontColorA_f"));
+        fontColorRFinal = Integer.parseInt(section.get(buttonType + "FontColorR_f"));
+        fontColorGFinal = Integer.parseInt(section.get(buttonType + "FontColorG_f"));
+        fontColorBFinal = Integer.parseInt(section.get(buttonType + "FontColorB_f"));
+        fontColorAFinal = Integer.parseInt(section.get(buttonType + "FontColorA_f"));
         fontColorFinal = new Color(fontColorRFinal, fontColorGFinal, fontColorBFinal, fontColorAFinal);
     }
     
@@ -297,7 +252,7 @@ public class ImageButton extends JPanel {
         }
     }
     
-    private class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
+    protected class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
         
         @Override
         public void mouseReleased(MouseEvent e) {
@@ -323,30 +278,7 @@ public class ImageButton extends JPanel {
             }
         }
     }
-    
-    private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
-        
-        @Override
-        public void mouseReleased(MouseEvent e) {
-            if (SwingUtilities.isLeftMouseButton(e)) {
-                for (int i = 0; i < Main.categoryArray.length; i++) {
-                    if (i != category) {
-                        Main.categoryArray[i].collapse();
-                    }
-                }
-                if (isExpanded) {
-                    expandTimer.stop();
-                    collapseTimer.start();
-                    isExpanded = false;
-                } else {
-                    collapseTimer.stop();
-                    expandTimer.start();
-                    isExpanded = true;
-                }
-            }
-        }
-    }
-    
+   
     private void run() throws IOException {
         Runtime rt = Runtime.getRuntime();
         Process process = rt.exec(action);
@@ -426,18 +358,6 @@ public class ImageButton extends JPanel {
     
     private void alphaStepDown() {
         backgroundColorACurrent = forceRGB(backgroundColorACurrent - backgroundColorAStep);
-    }
-    
-    private void expand() {
-        getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
-                getParent().getComponent(1).getHeight() + expandStepAmount));
-        revalidate();
-    }
-    
-    private void collapse() {
-        getParent().getComponent(1).setMaximumSize(new Dimension(getParent().getComponent(1).getWidth(),
-                getParent().getComponent(1).getHeight() - collapseStepAmount));
-        revalidate();
     }
     
     private class IndentTimerListener implements ActionListener {
@@ -538,30 +458,6 @@ public class ImageButton extends JPanel {
         }
     }
     
-    private class ExpandTimerListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-//            System.out.println("expand timer");
-            if (getParent().getComponent(1).getHeight() < parentMaxHeight) {
-                expand();
-            } else {
-                expandTimer.stop();
-            }
-        }
-    }
-    
-    private class CollapseTimerListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-//            System.out.println("collapse timer");
-            if (getParent().getComponent(1).getHeight() > 0) {
-                collapse();
-            } else {
-                collapseTimer.stop();
-            }
-        }
-    }
-    
     private int forceRGB(int i) {
         return Math.min(255, Math.max(0, i));
     }
@@ -570,15 +466,4 @@ public class ImageButton extends JPanel {
         return Math.min(255.0, Math.max(0.0, i));
     }
     
-    public void setExpandStepAmount(int step) {
-        expandStepAmount = step;
-    }
-    
-    public void setCollapseStepAmount(int step) {
-        collapseStepAmount = step;
-    }
-    
-    public void setParentMaxHeight(int height) {
-        parentMaxHeight = height;
-    }
 }

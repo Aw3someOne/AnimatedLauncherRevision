@@ -5,10 +5,8 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.io.File;
 import java.io.IOException;
 
-import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 
 import org.ini4j.Ini;
@@ -21,7 +19,7 @@ public class Category extends JPanel {
     private int numberOfButtons;
     private JPanel buttonPanel;
     private int maxHeight;
-    private ImageButton header;
+    private HeaderButton header;
     private Image foregroundImage;
     private int foregroundImageXOffset;
     private int foregroundImageYOffset;
@@ -43,7 +41,7 @@ public class Category extends JPanel {
                 "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
         
-        header = new ImageButton(category);
+        header = new HeaderButton(category);
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
                 "[grow, fill," + Main.HEADER_WIDTH + "]",
@@ -53,6 +51,7 @@ public class Category extends JPanel {
             ImageButton button = new ImageButton(category, i);
             buttonPanel.add(button);
         }
+        header.setButtonPanel(buttonPanel);
         add(buttonPanel);
         if (this.category + 1 == Main.NUMBER_OF_CATEGORIES) {
             JPanel blackBar = new JPanel();
@@ -69,18 +68,19 @@ public class Category extends JPanel {
         Graphics2D gui = (Graphics2D)g;
         gui.setBackground(Main.CLEAR);
         gui.clearRect(0, 0, this.getWidth(), this.getHeight());
+        main.repack();
     }
     
     public void collapseInstant() {
         buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
-        header.isExpanded = false;
+        header.setIsExpandedFalse();
         revalidate();
     }
     
     public void collapse() {
         header.expandTimer.stop();
         header.collapseTimer.start();
-        header.isExpanded = false;
+        header.setIsExpandedFalse();
     }
     
     public int getMaxHeight() {

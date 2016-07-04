@@ -42,6 +42,7 @@ public class Main extends JFrame {
     public static final Theme THEME;
     public static final int NUMBER_OF_CATEGORIES;
     public static Category[] categoryArray;
+    public int maxHeight = 0;
     static {
         FileReader fr = null;
         Ini ini = null;
@@ -115,7 +116,6 @@ public class Main extends JFrame {
         }
         
         getContentPane().add(panel);
-        
         pack();
         setVisible(false);
         
@@ -131,6 +131,18 @@ public class Main extends JFrame {
 //         Places window on the desktop. Commented out to make testing less annoying.
 //        toBack();
         setLocation(new Point(WIN_X, WIN_Y));
+    }
+    
+    public void repack() {
+        int width = this.getWidth();
+        int height = 0;
+        for (Category cat : categoryArray) {
+            height += cat.getHeight();
+        }
+        if (height > maxHeight) {
+            maxHeight = height;
+            setBounds(WIN_X, WIN_Y, width, maxHeight);
+        }
     }
 
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
