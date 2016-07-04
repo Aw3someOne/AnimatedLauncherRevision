@@ -1,8 +1,6 @@
 package p1;
 
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.io.FileReader;
 import java.io.IOException;
