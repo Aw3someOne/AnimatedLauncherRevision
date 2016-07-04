@@ -31,9 +31,11 @@ public class Category extends JPanel {
     private Ini.Section section;
     private int expandStepAmount;
     private int collapseStepAmount;
+    private Main main;
     
-    public Category(int category) throws IOException {
+    public Category(int category, Main main) throws IOException {
         this.category = category;
+        this.main = main;
         section = Main.CONFIG.get("Category" + this.category);
         this.numberOfButtons = Integer.parseInt(section.get("numberOfButtons"));
         setLayout(new MigLayout("wrap 1, insets 0",
