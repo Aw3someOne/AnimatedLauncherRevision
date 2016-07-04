@@ -132,7 +132,6 @@ public class Main extends JFrame {
 //        toBack();
         setLocation(new Point(WIN_X, WIN_Y));
     }
-<<<<<<< HEAD
     
     public void repack() {
         int width = this.getWidth();
@@ -145,8 +144,6 @@ public class Main extends JFrame {
             setBounds(WIN_X, WIN_Y, width, maxHeight);
         }
     }
-=======
->>>>>>> branch 'master' of https://SoreAru@bitbucket.org/SoreAru/animated-launcher-revision.git
 
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
         new Clock();
