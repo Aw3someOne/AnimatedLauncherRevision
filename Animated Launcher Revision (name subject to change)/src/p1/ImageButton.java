@@ -6,7 +6,6 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -102,6 +101,8 @@ public class ImageButton extends JPanel {
     private int expandStepAmount;
     private int collapseStepAmount;
     private int parentMaxHeight;
+    private int buttonWidth;
+    private int imageBound;
     
     public ImageButton(int category, int buttonNumber) throws IOException {
         this.category = category;
@@ -131,8 +132,10 @@ public class ImageButton extends JPanel {
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D gui = (Graphics2D)g;
-        gui.setBackground(backgroundColorCurrent);
+        gui.setBackground(Main.CLEAR);
+        gui.setColor(backgroundColorCurrent);
         gui.clearRect(0, 0, width, height);
+        gui.fillRect(0, 0, buttonWidth, height);
         
 //Deprecated code that allows out of range values without breaking, but it runs like crap
         
@@ -189,7 +192,9 @@ public class ImageButton extends JPanel {
         Ini.Section section = Main.CONFIG.get("Category" + category);
         text = section.get("button" + buttonNumber +"Text");
         action = section.get("button" + buttonNumber +"Action");
-        width = Main.BUTTON_WIDTH;
+        buttonWidth = Main.BUTTON_WIDTH;
+        imageBound = Main.IMAGE_BOUND;
+        width = Math.max(Main.BUTTON_WIDTH, Main.IMAGE_BOUND);
         height = Main.BUTTON_HEIGHT;
         
         String fontFace = section.get("buttonFontFace");
@@ -212,9 +217,8 @@ public class ImageButton extends JPanel {
         backgroundColorAFinal = Integer.parseInt(section.get("buttonBackgroundColorA_f"));
         backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
         
-//        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
-        foregroundImage = ImageIO.read(ImageButton.class.getClassLoader().getResourceAsStream("images/" + section.get("ForegroundImage")));
-        foregroundImageXOffset = Integer.parseInt(section.get("ForegroundImageXOffset"));
+        foregroundImage = Main.THEME.getImage(category);
+        foregroundImageXOffset = Main.THEME.get("Category" + category + "ForegroundImageXOffset");
         foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
         foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
         foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
@@ -236,6 +240,7 @@ public class ImageButton extends JPanel {
     private void readVariables(int category) {
         Ini.Section section = Main.CONFIG.get("Category" + category);
         text = section.get("headerText");
+        buttonWidth = Main.HEADER_WIDTH;
         width = Main.HEADER_WIDTH;
         height = Main.HEADER_HEIGHT;
         

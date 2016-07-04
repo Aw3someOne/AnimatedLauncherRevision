@@ -1,5 +1,6 @@
 package p1;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Image;
 import java.io.File;
@@ -49,6 +50,14 @@ public class Category extends JPanel {
             buttonPanel.add(button);
         }
         add(buttonPanel);
+        if (this.category + 1 == Main.NUMBER_OF_CATEGORIES) {
+            JPanel blackBar = new JPanel();
+            blackBar.setBackground(Color.BLACK);
+            blackBar.setMinimumSize(new Dimension(Main.HEADER_WIDTH, 10));
+            blackBar.setPreferredSize(new Dimension(Main.HEADER_WIDTH, 10));
+            blackBar.setMaximumSize(new Dimension(Main.HEADER_WIDTH, 10));
+            add(blackBar);
+        }
     }
     public void collapseInstant() {
         buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
