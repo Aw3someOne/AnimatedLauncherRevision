@@ -212,7 +212,8 @@ public class ImageButton extends JPanel {
         backgroundColorAFinal = Integer.parseInt(section.get("buttonBackgroundColorA_f"));
         backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
         
-        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
+//        foregroundImage = ImageIO.read(new File(section.get("ForegroundImage")));
+        foregroundImage = ImageIO.read(ImageButton.class.getClassLoader().getResourceAsStream("images/" + section.get("ForegroundImage")));
         foregroundImageXOffset = Integer.parseInt(section.get("ForegroundImageXOffset"));
         foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
         foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
