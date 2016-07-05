@@ -195,7 +195,7 @@ public class ImageButton extends JPanel {
             buttonType = "button";
             action = section.get("button" + buttonNumber +"Action");
             foregroundImage = Main.THEME.getImage(category);
-            foregroundImageXOffset = Main.THEME.get("Category" + category + "ForegroundImageXOffset");
+            foregroundImageXOffset = Main.THEME.getValue("Category" + category + "ForegroundImageXOffset");
             foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
             foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
             foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
@@ -203,34 +203,31 @@ public class ImageButton extends JPanel {
         }
         
         text = section.get(buttonType + ((buttonNumber == -1) ? "" : buttonNumber) + "Text");
-        String fontFace = section.get(buttonType + "FontFace");
-        int fontSize = Integer.parseInt(section.get(buttonType + "FontSize"));
         
-//        font = new Font(fontFace, Font.PLAIN, fontSize);
-        font = Main.THEME.getFont(category, buttonNumber);
-        backgroundColorRInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorR_i"));
-        backgroundColorGInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorG_i"));
-        backgroundColorBInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorB_i"));
-        backgroundColorAInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorA_i"));
-        backgroundColorInitial = new Color(backgroundColorRInitial, backgroundColorGInitial, backgroundColorBInitial, backgroundColorAInitial);
+        font = Main.THEME.getFont(category, buttonType);
+        backgroundColorInitial = Main.THEME.getColor(category, buttonType, "BackgroundColor_i");
+        backgroundColorRInitial = backgroundColorInitial.getRed();
+        backgroundColorGInitial = backgroundColorInitial.getGreen();
+        backgroundColorBInitial = backgroundColorInitial.getBlue();
+        backgroundColorAInitial = backgroundColorInitial.getAlpha();
         
-        backgroundColorRFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorR_f"));
-        backgroundColorGFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorG_f"));
-        backgroundColorBFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorB_f"));
-        backgroundColorAFinal = Integer.parseInt(section.get(buttonType + "BackgroundColorA_f"));
-        backgroundColorFinal = new Color(backgroundColorRFinal, backgroundColorGFinal, backgroundColorBFinal, backgroundColorAFinal);
+        backgroundColorFinal = Main.THEME.getColor(category, buttonType, "BackgroundColor_f");
+        backgroundColorRFinal = backgroundColorFinal.getRed();   
+        backgroundColorGFinal = backgroundColorFinal.getGreen(); 
+        backgroundColorBFinal = backgroundColorFinal.getBlue();  
+        backgroundColorAFinal = backgroundColorFinal.getAlpha(); 
         
-        fontColorRInitial = Integer.parseInt(section.get(buttonType + "FontColorR_i"));
-        fontColorGInitial = Integer.parseInt(section.get(buttonType + "FontColorG_i"));
-        fontColorBInitial = Integer.parseInt(section.get(buttonType + "FontColorB_i"));
-        fontColorAInitial = Integer.parseInt(section.get(buttonType + "FontColorA_i"));
-        fontColorInitial = new Color(fontColorRInitial, fontColorGInitial, fontColorBInitial, fontColorAInitial);
-        
-        fontColorRFinal = Integer.parseInt(section.get(buttonType + "FontColorR_f"));
-        fontColorGFinal = Integer.parseInt(section.get(buttonType + "FontColorG_f"));
-        fontColorBFinal = Integer.parseInt(section.get(buttonType + "FontColorB_f"));
-        fontColorAFinal = Integer.parseInt(section.get(buttonType + "FontColorA_f"));
-        fontColorFinal = new Color(fontColorRFinal, fontColorGFinal, fontColorBFinal, fontColorAFinal);
+        fontColorInitial = Main.THEME.getColor(category, buttonType, "FontColor_i");
+        fontColorRInitial = fontColorInitial.getRed();   
+        fontColorGInitial = fontColorInitial.getGreen(); 
+        fontColorBInitial = fontColorInitial.getBlue();  
+        fontColorAInitial = fontColorInitial.getAlpha(); 
+
+        fontColorFinal = Main.THEME.getColor(category, buttonType, "FontColor_f");
+        fontColorRFinal = fontColorFinal.getRed();   
+        fontColorGFinal = fontColorFinal.getGreen(); 
+        fontColorBFinal = fontColorFinal.getBlue();  
+        fontColorAFinal = fontColorFinal.getAlpha();
     }
     
     private class BaseButtonMouseAdapter extends MouseAdapter {

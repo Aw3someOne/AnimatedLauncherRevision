@@ -70,22 +70,22 @@ public class Main extends JFrame {
             }
             THEME_NAME = themeName;
             THEME = new Theme(THEME_NAME);
-            HEADER_WIDTH = THEME.get("headerWidth");
-            HEADER_HEIGHT = THEME.get("headerHeight");
-            BUTTON_WIDTH = THEME.get("buttonWidth");
-            IMAGE_BOUND = THEME.get("imageBound");
-            BUTTON_HEIGHT = THEME.get("buttonHeight");
-            BUTTON_SPACING = THEME.get("buttonSpacing");
-            HEADER_TEXT_INDENT = THEME.get("headerTextIndent");
-            TEXT_INDENT = THEME.get("textIndent");
-            TEXT_INDENT_STEPS = THEME.get("textIndentSteps");
-            TEXT_INDENT_DURATION = THEME.get("textIndentDuration");
+            HEADER_WIDTH = THEME.getValue("headerWidth");
+            HEADER_HEIGHT = THEME.getValue("headerHeight");
+            BUTTON_WIDTH = THEME.getValue("buttonWidth");
+            IMAGE_BOUND = THEME.getValue("imageBound");
+            BUTTON_HEIGHT = THEME.getValue("buttonHeight");
+            BUTTON_SPACING = THEME.getValue("buttonSpacing");
+            HEADER_TEXT_INDENT = THEME.getValue("headerTextIndent");
+            TEXT_INDENT = THEME.getValue("textIndent");
+            TEXT_INDENT_STEPS = THEME.getValue("textIndentSteps");
+            TEXT_INDENT_DURATION = THEME.getValue("textIndentDuration");
             TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
-            EXPAND_STEPS = THEME.get("expandSteps");
-            EXPAND_DURATION = THEME.get("expandDuration");
+            EXPAND_STEPS = THEME.getValue("expandSteps");
+            EXPAND_DURATION = THEME.getValue("expandDuration");
             EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
-            WIN_X = THEME.get("winX");
-            WIN_Y = THEME.get("winY");
+            WIN_X = THEME.getValue("winX");
+            WIN_Y = THEME.getValue("winY");
             NUMBER_OF_CATEGORIES = Integer.parseInt(SYSTEM.get("numberOfCategories"));
         }
     private JPanel panel;
