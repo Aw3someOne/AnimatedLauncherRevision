@@ -1,8 +1,12 @@
 package p1;
 
+import java.awt.Font;
+import java.awt.FontFormatException;
+import java.awt.GraphicsEnvironment;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,15 +22,18 @@ public class Theme {
         CUSTOM;
     }
     
+    private static final GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
     private ThemeName themeName;
     private String imageDirectory;
     private Map<String, Integer> valueMap;
     private Map<Integer, BufferedImage> imageMap;
+    private Map<String, Font> fontMap;
     
     Theme(ThemeName themeName) {
         this.themeName = themeName;
         valueMap = new HashMap<String, Integer>();
         imageMap = new HashMap<Integer, BufferedImage>();
+        fontMap = new HashMap<String, Font>();
         switch(themeName) {
         case STEINS_GATE:
             valueMap.put("headerWidth", 600);
@@ -54,6 +61,12 @@ public class Theme {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            fontMap.put("Category0button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category1button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category2button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category0header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
+            fontMap.put("Category1header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
+            fontMap.put("Category2header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
             break;
         case YOUR_LIE_IN_APRIL:
             valueMap.put("headerWidth", 600);
@@ -81,6 +94,12 @@ public class Theme {
                 // TODO Auto-generated catch block
                 e1.printStackTrace();
             }
+            fontMap.put("Category0button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category1button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category2button", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 16));
+            fontMap.put("Category0header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
+            fontMap.put("Category1header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
+            fontMap.put("Category2header", createFont("Michroma.ttf").deriveFont(Font.PLAIN, 24));
             break;
         case CUSTOM:
             Ini.Section section0 = Main.CONFIG.get("Category" + 0);
@@ -111,8 +130,25 @@ public class Theme {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+            fontMap.put("Category0button", new Font(section0.get("buttonFontFace"), Font.PLAIN, Integer.parseInt(section0.get("buttonFontSize"))));
+            fontMap.put("Category1button", new Font(section1.get("buttonFontFace"), Font.PLAIN, Integer.parseInt(section1.get("buttonFontSize"))));
+            fontMap.put("Category2button", new Font(section2.get("buttonFontFace"), Font.PLAIN, Integer.parseInt(section2.get("buttonFontSize"))));
+            fontMap.put("Category0header", new Font(section0.get("headerFontFace"), Font.PLAIN, Integer.parseInt(section0.get("headerFontSize"))));
+            fontMap.put("Category1header", new Font(section1.get("headerFontFace"), Font.PLAIN, Integer.parseInt(section1.get("headerFontSize"))));
+            fontMap.put("Category2header", new Font(section2.get("headerFontFace"), Font.PLAIN, Integer.parseInt(section2.get("headerFontSize"))));
             break;
         }
+    }
+    
+    public Font getFont(int category, int buttonNumber) {
+        String buttonType;
+        if (buttonNumber == -1) {
+            buttonType = "header";
+        } else {
+            buttonType = "button";
+        }
+        System.out.println("Category" + category + buttonType);
+        return fontMap.get("Category" + category + buttonType);
     }
     
     public int get(String key) {
@@ -121,5 +157,18 @@ public class Theme {
     
     public BufferedImage getImage(int category) {
         return imageMap.get(category);
+    }
+    
+    private static Font createFont(String fontpath) {
+        InputStream fontStream = Clock.class.getClassLoader().getResourceAsStream(fontpath);
+        Font font = null;
+        try {
+            font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
+        } catch (FontFormatException | IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+        GE.registerFont(font);
+        return font;
     }
 }

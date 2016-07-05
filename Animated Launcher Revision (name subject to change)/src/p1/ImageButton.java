@@ -206,7 +206,8 @@ public class ImageButton extends JPanel {
         String fontFace = section.get(buttonType + "FontFace");
         int fontSize = Integer.parseInt(section.get(buttonType + "FontSize"));
         
-        font = new Font(fontFace, Font.PLAIN, fontSize);
+//        font = new Font(fontFace, Font.PLAIN, fontSize);
+        font = Main.THEME.getFont(category, buttonNumber);
         backgroundColorRInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorR_i"));
         backgroundColorGInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorG_i"));
         backgroundColorBInitial = Integer.parseInt(section.get(buttonType + "BackgroundColorB_i"));
