@@ -13,24 +13,70 @@ import org.ini4j.Ini;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * <p>Category.</p>
+ * @author Stephen Cheng
+ * @version 1.0
+ */
 public class Category extends JPanel {
     
+    /**
+     * <p>serialVersionUID.</p>
+     */
+    private static final long serialVersionUID = 675687574323872635L;
+    /**
+     * <p>category</p>
+     * Category number.
+     */
     private int category;
+    /**
+     * <p>numberOfButtons</p>
+     * Number of buttons in the category.
+     */
     private int numberOfButtons;
+    /**
+     * <p>buttonPanel</p>
+     * Holds all the buttons.
+     */
     private JPanel buttonPanel;
+    /**
+     * <p>maxHeight</p>
+     * Maximum height of the category.
+     */
     private int maxHeight;
+    /**
+     * <p>header</p>
+     * Header button.
+     */
     private HeaderButton header;
-    private Image foregroundImage;
-    private int foregroundImageXOffset;
-    private int foregroundImageYOffset;
-    private int foregroundImageXCrop;
-    private int foregroundImageYCrop;
-    private int[] foregroundImageBounds;
+    /**
+     * <p>section</p>
+     * Section of the config file.
+     */
     private Ini.Section section;
+    /**
+     * <p>expandStepAmount</p>
+     * Number of pixels that the panel grows by at a time when the category expands.
+     */
     private int expandStepAmount;
+    /**
+     * <p>collapseStepAmount</p>
+     * Numbers of pixels that the panel shrinks by at a time when the category collapses.
+     */
     private int collapseStepAmount;
+    /**
+     * <p>main</p>
+     * Main object that is used to invoke methods.
+     */
     private Main main;
     
+    /**
+     * <p>Category</p>
+     * Constructor.
+     * @param category category number
+     * @param main main object
+     * @throws IOException IO error
+     */
     public Category(int category, Main main) throws IOException {
         this.category = category;
         this.main = main;
@@ -63,6 +109,10 @@ public class Category extends JPanel {
         }
     }
     
+    /* (non-Javadoc)
+     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
+     */
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
         Graphics2D gui = (Graphics2D)g;
@@ -71,30 +121,57 @@ public class Category extends JPanel {
         main.repack();
     }
     
+    /**
+     * <p>collapseInstant</p>
+     * Collapses the button panel instantly without steps.
+     */
     public void collapseInstant() {
         buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
         header.setIsExpandedFalse();
         revalidate();
     }
     
+    /**
+     * <p>collapse</p>
+     * Collapses the button panel.
+     */
     public void collapse() {
         header.expandTimer.stop();
         header.collapseTimer.start();
         header.setIsExpandedFalse();
     }
     
+    /**
+     * <p>getMaxHeight</p>
+     * Gets categories maxHeight.
+     * @return maxHeight
+     */
     public int getMaxHeight() {
         return maxHeight;
     }
     
+    /**
+     * <p>getExpandStepAmount</p>
+     * Gets the expand step amount.
+     * @return expandStepAmount;
+     */
     public int getExpandStepAmount() {
         return expandStepAmount;
     }
     
+    /**
+     * <p>getCollapseStepAmount</p>
+     * Gets the collapse step amount.
+     * @return collapseStepAmount
+     */
     public int getCollapseStepAmount() {
         return collapseStepAmount;
     }
     
+    /**
+     * <p>calculateMaxHeight</p>
+     * Calculates the button panel's maximum height.
+     */
     public void calculateMaxHeight() {
         maxHeight = buttonPanel.getHeight();
         expandStepAmount = maxHeight / Main.EXPAND_STEPS;

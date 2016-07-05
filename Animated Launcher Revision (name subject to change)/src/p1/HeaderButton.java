@@ -10,6 +10,11 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+/**
+ * <p>HeaderButton.</p>
+ * @author Stephen Cheng
+ * @version 1.0
+ */
 public class HeaderButton extends ImageButton {
 
     private int expandStepAmount;

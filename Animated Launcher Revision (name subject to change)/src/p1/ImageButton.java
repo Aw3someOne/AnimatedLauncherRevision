@@ -28,39 +28,104 @@ import org.ini4j.Ini;
 
 import net.miginfocom.swing.MigLayout;
 
+/**
+ * <p>ImageButton.</p>
+ * @author Stephen Cheng
+ * @version 1.0
+ */
 public class ImageButton extends JPanel {
     
+    /**
+     * <p>category</p>
+     * Category Number.
+     */
     protected int category;
+    /**
+     * <p>buttonNumber</p>
+     * Button Number.
+     */
     private int buttonNumber;
+    /**
+     * <p>text</p>
+     * Text that is displayed on the button.
+     */
     protected String text;
+    /**
+     * <p>action</p>
+     * Action that is performed when the button is clicked.
+     */
     private String action;
+    /**
+     * <p>width</p>
+     * Button width.
+     */
     protected int width;
+    /**
+     * <p>height</p>
+     * Button height.
+     */
     protected int height;
     
     protected int backgroundColorRInitial;
     protected int backgroundColorGInitial;
     protected int backgroundColorBInitial;
     protected int backgroundColorAInitial;
+    /**
+     * <p>backgroundColorInitial</p>
+     * Initial background color.
+     */
     protected Color backgroundColorInitial;
     
     protected double backgroundColorRCurrent;
     protected double backgroundColorGCurrent;
     protected double backgroundColorBCurrent;
     protected double backgroundColorACurrent;
+    /**
+     * <p>backgroundColorCurrent</p>
+     * Current background color.
+     */
     protected Color backgroundColorCurrent;
     
     protected int backgroundColorRFinal;
     protected int backgroundColorGFinal;
     protected int backgroundColorBFinal;
     protected int backgroundColorAFinal;
+    /**
+     * <p>backgroundColorFinal</p>
+     * Final background Color.
+     */
     protected Color backgroundColorFinal;
    
+    /**
+     * <p>backgroundColorRStep</p>
+     * Amount that the background color (Red) changes when mouseover.
+     */
     protected double backgroundColorRStep;
+    /**
+     * <p>backgroundColorGStep</p>
+     * Amount that the background color (Green) changes when mouseover.
+     */
     protected double backgroundColorGStep;
+    /**
+     * <p>backgroundColorBStep</p>
+     * Amount that the background color (Blue) changes when mouseover.
+     */
     protected double backgroundColorBStep;
+    /**
+     * <p>backgroundColorAStep</p>
+     * Amount that the background color (Alpha) changes when mouseover.
+     */
     protected double backgroundColorAStep;
 
+    /**
+     * <p>foregroundImage</p>
+     * Image that is displayed over the background color.
+     */
     protected BufferedImage foregroundImage;
+    /**
+     * <p>foregroundImageXOffset</p>
+     * Distance from left edge of button to display image.
+     */
     protected int foregroundImageXOffset;
     private int foregroundImageYOffset;
     private int foregroundImageXCrop;

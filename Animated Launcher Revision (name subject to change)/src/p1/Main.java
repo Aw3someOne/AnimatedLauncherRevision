@@ -18,10 +18,27 @@ import org.ini4j.InvalidFileFormatException;
 import net.miginfocom.swing.MigLayout;
 import p1.Theme.ThemeName;
 
+/**
+ * <p>Main.</p>
+ * @author Stephen Cheng
+ * @version 1.0
+ */
 public class Main extends JFrame {
 
-    public static final Color CLEAR = new Color(0,0,0,0);
+    /**
+     * <p>CLEAR</p>
+     * Transparent color.
+     */
+    public static final Color CLEAR = new Color(0, 0, 0, 0);
+    /**
+     * <p>CONFIG</p>
+     * Ini file.
+     */
     public static final Ini CONFIG;
+    /**
+     * <p>serialVersionUID.</p>
+     */
+    private static final long serialVersionUID = 8805910311072461857L;
     static {
         FileReader fr = null;
         Ini ini = null;
@@ -43,11 +60,19 @@ public class Main extends JFrame {
         }
         CONFIG = ini;
     }
+    /**
+     * <p>SYSTEM</p>
+     * System section of CONFIG.
+     */
     public static final Ini.Section SYSTEM = CONFIG.get("System");
-    private static String themeString = SYSTEM.get("theme");
+    /**
+     * THEME_NAME
+     * Theme.
+     */
     public static final ThemeName THEME_NAME;
     static {
         ThemeName themeName = null;
+        String themeString = SYSTEM.get("theme");
         for (ThemeName t : ThemeName.values()) {
             if (ThemeName.valueOf(themeString).equals(t)) {
                 themeName = t;
@@ -56,6 +81,10 @@ public class Main extends JFrame {
         }
         THEME_NAME = themeName;
     }
+    /**
+     * <p>THEME</p>
+     * Theme.
+     */
     public static final Theme THEME = new Theme(THEME_NAME);
     public static final int HEADER_WIDTH = THEME.getValue("headerWidth");
     public static final int HEADER_HEIGHT = THEME.getValue("headerHeight");
@@ -75,10 +104,28 @@ public class Main extends JFrame {
     public static final int WIN_Y = THEME.getValue("winY");
     public static final int NUMBER_OF_CATEGORIES = Integer.parseInt(SYSTEM.get("numberOfCategories"));
     
+    /**
+     * <p>categoryArray</p>
+     * Array containing all the category objects.
+     */
     public static Category[] categoryArray;
-    public int maxHeight = 0;
+    /**
+     * <p>maxHeight</p>
+     * Maximum height of the window (is set later).
+     */
+    private int maxHeight;
+    /**
+     * <p>panel</p>
+     * Panel that contains all the categories.
+     */
     private JPanel panel;
     
+    /**
+     * <p>Main</p>
+     * Constructor.
+     * @throws InvalidFileFormatException
+     * @throws IOException
+     */
     public Main() throws InvalidFileFormatException, IOException {
         super("Animated Launcher Revision");
         setLayout(new MigLayout("wrap 1, insets 0",
@@ -120,6 +167,10 @@ public class Main extends JFrame {
         setLocation(new Point(WIN_X, WIN_Y));
     }
     
+    /**
+     * <p>repack</p>
+     * Resizes the window.
+     */
     public void repack() {
         int width = this.getWidth();
         int height = 0;
@@ -132,6 +183,13 @@ public class Main extends JFrame {
         }
     }
 
+    /**
+     * <p>copyStream</p>
+     * Copies a stream.
+     * @param input stream to copy
+     * @param output stream to write to
+     * @throws IOException IO error
+     */
     public static void copyStream(InputStream input, OutputStream output) throws IOException {
         byte[] buffer = new byte[1024];
         int bytesRead = 0;
@@ -141,6 +199,13 @@ public class Main extends JFrame {
         output.close();
     }
     
+    /**
+     * <p>main</p>
+     * Entry point for the JVM.
+     * @param args
+     * @throws InvalidFileFormatException error
+     * @throws IOException IO error
+     */
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
         new Clock();
         new Main();
