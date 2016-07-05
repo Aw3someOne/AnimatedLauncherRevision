@@ -2,9 +2,12 @@ package p1;
 
 import java.awt.Color;
 import java.awt.Point;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
 
 import javax.swing.JFrame;
 import javax.swing.JPanel;
@@ -26,11 +29,14 @@ public class Main extends JFrame {
             fr = new FileReader("config.ini");
             ini = new Ini(fr);
         } catch (IOException e) {
-            // loads included default config.ini if config.ini does not exist
-            e.printStackTrace();
+            // auto-extracts included config.ini if config.ini does not exist
             InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
+            FileOutputStream os = null;
             try {
-                ini = new Ini(stream);
+                os = new FileOutputStream(new File("config.ini"));
+                copyStream(stream, os);
+                fr = new FileReader("config.ini");
+                ini = new Ini(fr);
             } catch (IOException e1) {
                 e1.printStackTrace();
             }
@@ -126,6 +132,15 @@ public class Main extends JFrame {
         }
     }
 
+    public static void copyStream(InputStream input, OutputStream output) throws IOException {
+        byte[] buffer = new byte[1024];
+        int bytesRead = 0;
+        while ((bytesRead = input.read(buffer)) != -1) {
+            output.write(buffer, 0, bytesRead);
+        }
+        output.close();
+    }
+    
     public static void main(String[] args) throws InvalidFileFormatException, IOException {
         new Clock();
         new Main();
