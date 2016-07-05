@@ -17,77 +17,60 @@ import p1.Theme.ThemeName;
 
 public class Main extends JFrame {
 
-    public static final Ini CONFIG;
-    public static final Ini.Section SYSTEM;
-    public static final int HEADER_WIDTH;
-    public static final int HEADER_HEIGHT;
-    public static final int BUTTON_WIDTH;
-    public static final int IMAGE_BOUND;
-    public static final int BUTTON_HEIGHT;
-    public static final int BUTTON_SPACING;
-    public static final int HEADER_TEXT_INDENT;
-    public static final int TEXT_INDENT;
-    public static final int TEXT_INDENT_STEPS;
-    public static final int TEXT_INDENT_DURATION;
-    public static final int TEXT_INDENT_SLEEP;
-    public static final int EXPAND_STEPS;
-    public static final int EXPAND_DURATION;
-    public static final int EXPAND_SLEEP;
-    public static final int WIN_X;
-    public static final int WIN_Y;
     public static final Color CLEAR = new Color(0,0,0,0);
-    public static final ThemeName THEME_NAME;
-    public static final Theme THEME;
-    public static final int NUMBER_OF_CATEGORIES;
-    public static Category[] categoryArray;
-    public int maxHeight = 0;
+    public static final Ini CONFIG;
     static {
         FileReader fr = null;
         Ini ini = null;
+        try {
+            fr = new FileReader("config.ini");
+            ini = new Ini(fr);
+        } catch (IOException e) {
+            // loads included default config.ini if config.ini does not exist
+            e.printStackTrace();
+            InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
             try {
-                fr = new FileReader("config.ini");
-                ini = new Ini(fr);
-            } catch (IOException e) {
-                // loads included default config.ini if config.ini does not exist
-                e.printStackTrace();
-                InputStream stream = Main.class.getClassLoader().getResourceAsStream("config.ini");
-                try {
-                    ini = new Ini(stream);
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
+                ini = new Ini(stream);
+            } catch (IOException e1) {
+                e1.printStackTrace();
             }
-            // Reads constants from config.ini
-            CONFIG = ini;
-            SYSTEM = CONFIG.get("System");
-            String themeString = SYSTEM.get("theme");
-            ThemeName themeName = null;
-            for (ThemeName t : ThemeName.values()) {
-                if (ThemeName.valueOf(themeString).equals(t)) {
-                    themeName = t;
-                    break;
-                }
-            }
-            THEME_NAME = themeName;
-            THEME = new Theme(THEME_NAME);
-            HEADER_WIDTH = THEME.getValue("headerWidth");
-            HEADER_HEIGHT = THEME.getValue("headerHeight");
-            BUTTON_WIDTH = THEME.getValue("buttonWidth");
-            IMAGE_BOUND = THEME.getValue("imageBound");
-            BUTTON_HEIGHT = THEME.getValue("buttonHeight");
-            BUTTON_SPACING = THEME.getValue("buttonSpacing");
-            HEADER_TEXT_INDENT = THEME.getValue("headerTextIndent");
-            TEXT_INDENT = THEME.getValue("textIndent");
-            TEXT_INDENT_STEPS = THEME.getValue("textIndentSteps");
-            TEXT_INDENT_DURATION = THEME.getValue("textIndentDuration");
-            TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
-            EXPAND_STEPS = THEME.getValue("expandSteps");
-            EXPAND_DURATION = THEME.getValue("expandDuration");
-            EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
-            WIN_X = THEME.getValue("winX");
-            WIN_Y = THEME.getValue("winY");
-            NUMBER_OF_CATEGORIES = Integer.parseInt(SYSTEM.get("numberOfCategories"));
         }
+        CONFIG = ini;
+    }
+    public static final Ini.Section SYSTEM = CONFIG.get("System");
+    private static String themeString = SYSTEM.get("theme");
+    public static final ThemeName THEME_NAME;
+    static {
+        ThemeName themeName = null;
+        for (ThemeName t : ThemeName.values()) {
+            if (ThemeName.valueOf(themeString).equals(t)) {
+                themeName = t;
+                break;
+            }
+        }
+        THEME_NAME = themeName;
+    }
+    public static final Theme THEME = new Theme(THEME_NAME);
+    public static final int HEADER_WIDTH = THEME.getValue("headerWidth");
+    public static final int HEADER_HEIGHT = THEME.getValue("headerHeight");
+    public static final int BUTTON_WIDTH = THEME.getValue("buttonWidth");
+    public static final int IMAGE_BOUND = THEME.getValue("imageBound");
+    public static final int BUTTON_HEIGHT = THEME.getValue("buttonHeight");
+    public static final int BUTTON_SPACING = THEME.getValue("buttonSpacing");
+    public static final int HEADER_TEXT_INDENT = THEME.getValue("headerTextIndent");
+    public static final int TEXT_INDENT = THEME.getValue("textIndent");
+    public static final int TEXT_INDENT_STEPS = THEME.getValue("textIndentSteps");
+    public static final int TEXT_INDENT_DURATION = THEME.getValue("textIndentDuration");
+    public static final int TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
+    public static final int EXPAND_STEPS = THEME.getValue("expandSteps");
+    public static final int EXPAND_DURATION = THEME.getValue("expandDuration");
+    public static final int EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;
+    public static final int WIN_X = THEME.getValue("winX");
+    public static final int WIN_Y = THEME.getValue("winY");
+    public static final int NUMBER_OF_CATEGORIES = Integer.parseInt(SYSTEM.get("numberOfCategories"));
+    
+    public static Category[] categoryArray;
+    public int maxHeight = 0;
     private JPanel panel;
     
     public Main() throws InvalidFileFormatException, IOException {
