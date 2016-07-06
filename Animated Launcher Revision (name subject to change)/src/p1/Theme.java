@@ -16,24 +16,55 @@ import javax.imageio.ImageIO;
 
 import org.ini4j.Ini;
 
+/**
+ * <p>Theme.</p>
+ * @author Stephen Cheng
+ * @version 1.0
+ */
 public class Theme {
 
+    /**
+     * <p>ThemeName.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     public enum ThemeName {
         STEINS_GATE,
         YOUR_LIE_IN_APRIL,
         CUSTOM;
     }
     
+    /**
+     * <p>GE.</p>
+     */
     private static final GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    private ThemeName themeName;
-    private String imageDirectory;
+    /**
+     * <p>valueMap</p>
+     * Holds all the variables from ini file.
+     */
     private Map<String, Integer> valueMap;
+    /**
+     * <p>imageMap</p>
+     * Holds all the images.
+     */
     private Map<Integer, BufferedImage> imageMap;
+    /**
+     * <p>fontMap</p>
+     * Holds the fonts.
+     */
     private Map<String, Font> fontMap;
+    /**
+     * <p>colorMap</p>
+     * Holds the colors.
+     */
     private Map<String, Color> colorMap;
     
+    /**
+     * <p>Theme</p>
+     * Constructor.
+     * @param themeName themeName
+     */
     Theme(ThemeName themeName) {
-        this.themeName = themeName;
         valueMap = new HashMap<String, Integer>();
         imageMap = new HashMap<Integer, BufferedImage>();
         fontMap = new HashMap<String, Font>();
@@ -95,22 +126,26 @@ public class Theme {
         Font[] buttonFonts = new Font[numberOfCategories];
         Font[] headerFonts = new Font[numberOfCategories];
         if (themeName == ThemeName.CUSTOM) {
-            try {
-                for (int i = 0; i < numberOfCategories; i++) {
+            for (int i = 0; i < numberOfCategories; i++) {
+                try {
                     foregroundImages[i] = ImageIO.read(new File(sections[i].get("ForegroundImage")));
+                } catch (IOException e) {
+                    try {
+                        foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/" + sections[i].get("ForegroundImage")));
+                    } catch (IOException e2) {
+                        // TODO Auto-generated catch block
+                        e2.printStackTrace();
+                    }
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         } else {
-            try {
-                for (int i = 0; i < numberOfCategories; i++) {
+            for (int i = 0; i < numberOfCategories; i++) {
+                try {
                     foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream(sections[i].get("ForegroundImage")));
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
             }
         }
         for (int i = 0; i < numberOfCategories; i++) {
@@ -135,39 +170,97 @@ public class Theme {
         }
     }
     
+    /**
+     * <p>getFont</p>
+     * Gets a font from the font map.
+     * @param font font to get
+     * @return font
+     */
     public Font getFont(String font) {
         return fontMap.get(font);
     }
     
-    public Font getFont(int category, String buttonType) {
-        return getFont("Category" + category + buttonType);
+    /**
+     * <p>getFont</p>
+     * Gets a font from the font map.
+     * @param categoryNumber category number
+     * @param buttonType button type
+     * @return font
+     */
+    public Font getFont(int categoryNumber, String buttonType) {
+        return getFont("Category" + categoryNumber + buttonType);
     }
     
+    /**
+     * <p>getValue</p>
+     * Gets a value from the value map.
+     * @param key key
+     * @return value
+     */
     public int getValue(String key) {
         return valueMap.get(key);
     }
     
+    /**
+     * <p>getColor</p>
+     * Gets a color from the color map.
+     * @param color color
+     * @return color
+     */
     public Color getColor(String color) {
         return colorMap.get(color);
     }
     
-    public Color getColor(int category, String buttonType, String name) {
-        return getColor("Category" + category + buttonType + name);
+    /**
+     * <p>getColor</p>
+     * Gets a color from the color map.
+     * @param categoryNumber category number
+     * @param buttonType button type
+     * @param name name
+     * @return color
+     */
+    public Color getColor(int categoryNumber, String buttonType, String name) {
+        return getColor("Category" + categoryNumber + buttonType + name);
     }
     
-    public BufferedImage getImage(int category) {
-        return imageMap.get(category);
+    /**
+     * <p>getImage</p>
+     * Gets an image from the image map.
+     * @param categoryNumber category number
+     * @return image
+     */
+    public BufferedImage getImage(int categoryNumber) {
+        return imageMap.get(categoryNumber);
     }
 
+    /**
+     * <p>createColorARGB</p>
+     * Creates a color from an string formatted in ARGB.
+     * @param color color string
+     * @return color
+     */
     private static Color createColorARGB(String color) {
         return createColorARGB(color, true);
     }
     
+    /**
+     * <p>createColorARGB</p>
+     * Creates a color from an string formatted in ARGB.
+     * @param color color string
+     * @param hasAlpha alpha
+     * @return color
+     */
     private static Color createColorARGB(String color, boolean hasAlpha) {
         int argb = (int) Long.decode(color).longValue();
         return new Color(argb, hasAlpha);
     }
     
+    /**
+     * <p>createColorRGBA</p>
+     * Creats a color from a string formatted in RGBA.
+     * @param color color string
+     * @return color
+     */
     private static Color createColorRGBA(String color) {
         int rgba = (int) Long.decode(color).longValue();
         int r = (rgba & 0xFF000000) >> 24;
@@ -177,6 +270,14 @@ public class Theme {
         return new Color(r, g, b, a);
     }
     
+    /**
+     * <p>createFont</p>
+     * Creates a font.
+     * @param fontpath name of the font or path of the font
+     * @param style font style
+     * @param size font size
+     * @return font
+     */
     private static Font createFont(String fontpath, int style, int size) {
         Font font = null;
         try {
@@ -190,16 +291,4 @@ public class Theme {
         return font;
     }
     
-//    private static Font createFont(String fontpath) {
-//        InputStream fontStream = Theme.class.getClassLoader().getResourceAsStream(fontpath);
-//        Font font = null;
-//        try {
-//            font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-//        } catch (FontFormatException | IOException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
-//        GE.registerFont(font);
-//        return font;
-//    }
 }
