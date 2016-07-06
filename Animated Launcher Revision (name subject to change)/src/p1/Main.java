@@ -35,10 +35,6 @@ public class Main extends JFrame {
      * Ini file.
      */
     public static final Ini CONFIG;
-    /**
-     * <p>serialVersionUID.</p>
-     */
-    private static final long serialVersionUID = 8805910311072461857L;
     static {
         FileReader fr = null;
         Ini ini = null;
@@ -109,6 +105,10 @@ public class Main extends JFrame {
      * Array containing all the category objects.
      */
     public static Category[] categoryArray;
+    /**
+     * <p>serialVersionUID.</p>
+     */
+    private static final long serialVersionUID = 8805910311072461857L;
     /**
      * <p>maxHeight</p>
      * Maximum height of the window (is set later).
@@ -202,7 +202,7 @@ public class Main extends JFrame {
     /**
      * <p>main</p>
      * Entry point for the JVM.
-     * @param args
+     * @param args command line arguments
      * @throws InvalidFileFormatException error
      * @throws IOException IO error
      */

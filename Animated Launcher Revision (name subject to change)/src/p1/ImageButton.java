@@ -44,7 +44,7 @@ public class ImageButton extends JPanel {
      * <p>buttonNumber</p>
      * Button Number.
      */
-    private int buttonNumber;
+    protected int buttonNumber;
     /**
      * <p>text</p>
      * Text that is displayed on the button.
@@ -54,7 +54,7 @@ public class ImageButton extends JPanel {
      * <p>action</p>
      * Action that is performed when the button is clicked.
      */
-    private String action;
+    protected String action;
     /**
      * <p>width</p>
      * Button width.
@@ -127,12 +127,12 @@ public class ImageButton extends JPanel {
      * Distance from left edge of button to display image.
      */
     protected int foregroundImageXOffset;
-    private int foregroundImageYOffset;
-    private int foregroundImageXCrop;
-    private int foregroundImageYCrop;
+    protected int foregroundImageYOffset;
+    protected int foregroundImageXCrop;
+    protected int foregroundImageYCrop;
     
-    JLabel label;
-    JLabel shadow;
+    protected JLabel label;
+    protected JLabel shadow;
     
     protected int fontColorRInitial;
     protected int fontColorGInitial;
@@ -151,22 +151,28 @@ public class ImageButton extends JPanel {
     protected int indentSteps;
     protected int indentDuration;
     protected int indentSleep;
-    private Timer indentTimer;
-    private Timer unindentTimer;
-    private Timer colorStepUpTimer;
-    private Timer colorStepDownTimer;
+    protected Timer indentTimer;
+    protected Timer unindentTimer;
+    protected Timer colorStepUpTimer;
+    protected Timer colorStepDownTimer;
     
-    Timer expandTimer;
-    Timer collapseTimer;
+    protected Timer expandTimer;
+    protected Timer collapseTimer;
     
     protected Font font;
     protected int buttonWidth;
     
-    
-    public ImageButton(int category, int buttonNumber) throws IOException {
-        this.categoryNumber = category;
+    /**
+     * <p>ImageButton</p>
+     * Constructor.
+     * @param categoryNumber category number
+     * @param buttonNumber button number
+     * @throws IOException e
+     */
+    public ImageButton(int categoryNumber, int buttonNumber) throws IOException {
+        this.categoryNumber = categoryNumber;
         this.buttonNumber = buttonNumber;
-        readVariables(category, buttonNumber);
+        readVariables(categoryNumber, buttonNumber);
         createButton();
         indentTimer = new Timer(indentSleep, new IndentTimerListener());
         unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
@@ -177,9 +183,10 @@ public class ImageButton extends JPanel {
         }
     }
     
+    @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D gui = (Graphics2D)g;
+        Graphics2D gui = (Graphics2D) g;
         gui.setBackground(Main.CLEAR);
         gui.setColor(backgroundColorCurrent);
         gui.clearRect(0, 0, width, height);
@@ -198,6 +205,10 @@ public class ImageButton extends JPanel {
 //        g.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
 //    }
 
+    /**
+     * <p>createButton</p>
+     * Creates the button.
+     */
     protected void createButton() {
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + width + "]",
@@ -236,8 +247,15 @@ public class ImageButton extends JPanel {
         setMaximumSize(new Dimension(width,height));
     }
     
-    private void readVariables(int category, int buttonNumber) throws IOException {
-        Ini.Section section = Main.CONFIG.get("Category" + category);
+    /**
+     * <p>readVariables</p>
+     * Reads the config files and stores variables.
+     * @param categoryNumber category number
+     * @param buttonNumber button number
+     * @throws IOException e
+     */
+    private void readVariables(int categoryNumber, int buttonNumber) throws IOException {
+        Ini.Section section = Main.CONFIG.get("Category" + categoryNumber);
         buttonWidth = Main.BUTTON_WIDTH;
         width = Math.max(Main.BUTTON_WIDTH, Main.IMAGE_BOUND);
         height = Main.BUTTON_HEIGHT;
@@ -258,9 +276,9 @@ public class ImageButton extends JPanel {
             indentSleep = Main.TEXT_INDENT_SLEEP;
         } else {
             buttonType = "button";
-            action = section.get("button" + buttonNumber +"Action");
-            foregroundImage = Main.THEME.getImage(category);
-            foregroundImageXOffset = Main.THEME.getValue("Category" + category + "ForegroundImageXOffset");
+            action = section.get("button" + buttonNumber + "Action");
+            foregroundImage = Main.THEME.getImage(categoryNumber);
+            foregroundImageXOffset = Main.THEME.getValue("Category" + categoryNumber + "ForegroundImageXOffset");
             foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
             foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
             foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
@@ -269,32 +287,37 @@ public class ImageButton extends JPanel {
         
         text = section.get(buttonType + ((buttonNumber == -1) ? "" : buttonNumber) + "Text");
         
-        font = Main.THEME.getFont(category, buttonType);
-        backgroundColorInitial = Main.THEME.getColor(category, buttonType, "BackgroundColor_i");
+        font = Main.THEME.getFont(categoryNumber, buttonType);
+        backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
         backgroundColorRInitial = backgroundColorInitial.getRed();
         backgroundColorGInitial = backgroundColorInitial.getGreen();
         backgroundColorBInitial = backgroundColorInitial.getBlue();
         backgroundColorAInitial = backgroundColorInitial.getAlpha();
         
-        backgroundColorFinal = Main.THEME.getColor(category, buttonType, "BackgroundColor_f");
+        backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
         backgroundColorRFinal = backgroundColorFinal.getRed();   
         backgroundColorGFinal = backgroundColorFinal.getGreen(); 
         backgroundColorBFinal = backgroundColorFinal.getBlue();  
         backgroundColorAFinal = backgroundColorFinal.getAlpha(); 
         
-        fontColorInitial = Main.THEME.getColor(category, buttonType, "FontColor_i");
+        fontColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_i");
         fontColorRInitial = fontColorInitial.getRed();   
         fontColorGInitial = fontColorInitial.getGreen(); 
         fontColorBInitial = fontColorInitial.getBlue();  
         fontColorAInitial = fontColorInitial.getAlpha(); 
 
-        fontColorFinal = Main.THEME.getColor(category, buttonType, "FontColor_f");
+        fontColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_f");
         fontColorRFinal = fontColorFinal.getRed();   
         fontColorGFinal = fontColorFinal.getGreen(); 
         fontColorBFinal = fontColorFinal.getBlue();  
         fontColorAFinal = fontColorFinal.getAlpha();
     }
     
+    /**
+     * <p>BaseButtonMouseAdapter.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class BaseButtonMouseAdapter extends MouseAdapter {
         
         @Override
@@ -314,6 +337,11 @@ public class ImageButton extends JPanel {
         }
     }
     
+    /**
+     * <p>ImageButtonMouseAdapter.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     protected class ImageButtonMouseAdapter extends BaseButtonMouseAdapter {
         
         @Override
@@ -341,17 +369,33 @@ public class ImageButton extends JPanel {
         }
     }
    
+    /**
+     * <p>run</p>
+     * Executes the action as a program.
+     * @throws IOException e
+     */
     private void run() throws IOException {
         Runtime rt = Runtime.getRuntime();
         Process process = rt.exec(action);
     }
     
+    /**
+     * <p>uri</p>
+     * Opens the action as a URI.
+     * @throws URISyntaxException e
+     * @throws IOException e
+     */
     private void uri() throws URISyntaxException, IOException {
         Desktop desktop = Desktop.getDesktop();
         URI uri = new URI(action);
         desktop.browse(uri);
     }
     
+    /**
+     * <p>open</p>
+     * Opens the action as a folder.
+     * @throws IOException e
+     */
     private void open() throws IOException {
         Desktop desktop = Desktop.getDesktop();
         Pattern p = Pattern.compile("%(.*)%");
@@ -366,6 +410,10 @@ public class ImageButton extends JPanel {
         desktop.open(new File(action));
     }
     
+    /**
+     * <p>buttonTextStepIndent</p>
+     * Indents the text by 1 step.
+     */
     private void buttonTextStepIndent() {
         int xPos = label.getX();
 //        int yPos = label.getY();
@@ -378,6 +426,10 @@ public class ImageButton extends JPanel {
 //        repaint();
     }
     
+    /**
+     * <p>buttonTextStepUnindent</p>
+     * Unindents the text by 1 step.
+     */
     private void buttonTextStepUnindent() {
         int xPos = label.getX();
 //        int yPos = label.getY();
@@ -390,38 +442,75 @@ public class ImageButton extends JPanel {
 //        repaint();
     }
     
+    /**
+     * <p>redStepUp</p>
+     * Increases red value by 1 step.
+     */
     private void redStepUp() {
         backgroundColorRCurrent = forceRGB(backgroundColorRCurrent + backgroundColorRStep);
     }
     
+    /**
+     * <p>redStepDown</p>
+     * Decreases red value by 1 step.
+     */
     private void redStepDown() {
         backgroundColorRCurrent = forceRGB(backgroundColorRCurrent - backgroundColorRStep);
     }
     
+    /**
+     * <p>greenStepUp</p>
+     * Increases green value by 1 step.
+     */
     private void greenStepUp() {
         backgroundColorGCurrent = forceRGB(backgroundColorGCurrent + backgroundColorGStep);
     }
     
+    /**
+     * <p>greenStepDown</p>
+     * Decreases green value by 1 step.
+     */
     private void greenStepDown() {
         backgroundColorGCurrent = forceRGB(backgroundColorGCurrent - backgroundColorGStep);
     }
     
+    /**
+     * <p>blueStepUp</p>
+     * Increases blue value by 1 step.
+     */
     private void blueStepUp() {
         backgroundColorBCurrent = forceRGB(backgroundColorBCurrent + backgroundColorBStep);
     }
     
+    /**
+     * <p>blueStepDown</p>
+     * Decreases blue value by 1 step.
+     */
     private void blueStepDown() {
         backgroundColorBCurrent = forceRGB(backgroundColorBCurrent - backgroundColorBStep);
     }
     
+    /**
+     * <p>alphaStepUp</p>
+     * Increases alpha value by 1 step.
+     */
     private void alphaStepUp() {
         backgroundColorACurrent = forceRGB(backgroundColorACurrent + backgroundColorAStep);
     }
     
+    /**
+     * <p>alphaStepDown</p>
+     * Decreases alpha value by 1 step.
+     */
     private void alphaStepDown() {
         backgroundColorACurrent = forceRGB(backgroundColorACurrent - backgroundColorAStep);
     }
     
+    /**
+     * <p>IndentTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class IndentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -433,6 +522,11 @@ public class ImageButton extends JPanel {
         }
     }
     
+    /**
+     * <p>UnindentTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class UnindentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -444,6 +538,11 @@ public class ImageButton extends JPanel {
         }
     }
     
+    /**
+     * <p>ColorStepUpTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class ColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -480,6 +579,11 @@ public class ImageButton extends JPanel {
         }
     }
     
+    /**
+     * <p>ColorStepDownTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class ColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
@@ -516,10 +620,22 @@ public class ImageButton extends JPanel {
         }
     }
     
+    /**
+     * <p>forceRGB</p>
+     * Forces a value into range [0, 255].
+     * @param i value
+     * @return int
+     */
     private int forceRGB(int i) {
         return Math.min(255, Math.max(0, i));
     }
     
+    /**
+     * <p>forceRGB</p>
+     * Forces a value into range [0.0, 255.0].
+     * @param i value
+     * @return double
+     */
     private double forceRGB(double i) {
         return Math.min(255.0, Math.max(0.0, i));
     }
