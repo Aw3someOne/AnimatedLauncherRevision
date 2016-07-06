@@ -65,37 +65,31 @@ public class ImageButton extends JPanel {
      * Button height.
      */
     protected int height;
-    
-    protected int backgroundColorRInitial;
-    protected int backgroundColorGInitial;
-    protected int backgroundColorBInitial;
-    protected int backgroundColorAInitial;
     /**
      * <p>backgroundColorInitial</p>
      * Initial background color.
      */
     protected Color backgroundColorInitial;
-    
-    protected double backgroundColorRCurrent;
-    protected double backgroundColorGCurrent;
-    protected double backgroundColorBCurrent;
-    protected double backgroundColorACurrent;
     /**
      * <p>backgroundColorCurrent</p>
      * Current background color.
      */
     protected Color backgroundColorCurrent;
-    
-    protected int backgroundColorRFinal;
-    protected int backgroundColorGFinal;
-    protected int backgroundColorBFinal;
-    protected int backgroundColorAFinal;
     /**
      * <p>backgroundColorFinal</p>
      * Final background Color.
      */
     protected Color backgroundColorFinal;
-   
+    /**
+     * <p>backgroundColors</p>
+     * Stores the background color steps.
+     */
+    protected Color[] backgroundColors;
+    /**
+     * <p>backgroundColorIndex</p>
+     * Uses to step through the background color array.
+     */
+    protected int backgroundColorIndex;
     /**
      * <p>backgroundColorRStep</p>
      * Amount that the background color (Red) changes when mouseover.
@@ -116,7 +110,6 @@ public class ImageButton extends JPanel {
      * Amount that the background color (Alpha) changes when mouseover.
      */
     protected double backgroundColorAStep;
-
     /**
      * <p>foregroundImage</p>
      * Image that is displayed over the background color.
@@ -134,16 +127,7 @@ public class ImageButton extends JPanel {
     protected JLabel label;
     protected JLabel shadow;
     
-    protected int fontColorRInitial;
-    protected int fontColorGInitial;
-    protected int fontColorBInitial;
-    protected int fontColorAInitial;
     protected Color fontColorInitial;
-    
-    protected int fontColorRFinal;
-    protected int fontColorGFinal;
-    protected int fontColorBFinal;
-    protected int fontColorAFinal;
     protected Color fontColorFinal;
     
     protected int indent;
@@ -188,23 +172,12 @@ public class ImageButton extends JPanel {
         super.paintComponent(g);
         Graphics2D gui = (Graphics2D) g;
         gui.setBackground(Main.CLEAR);
-        gui.setColor(backgroundColorCurrent);
+        gui.setColor(backgroundColors[backgroundColorIndex]);
         gui.clearRect(0, 0, width, height);
         gui.fillRect(0, 0, buttonWidth, height);
-        
-//Deprecated code that allows out of range values without breaking, but it runs like crap
-        
-//        g.drawImage(foregroundImage, 0, 0, this);
-//        gui.drawImage(foregroundImage,
-//                foregroundImageXOffset, foregroundImageYOffset, width + foregroundImageXOffset, height + foregroundImageYOffset,
-//                foregroundImageXCrop,foregroundImageYCrop + buttonNumber * height, width, (buttonNumber + 1) * height, null);
+        gui.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
     }
     
-//    public void paint(Graphics g) {
-//        super.paint(g);
-//        g.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
-//    }
-
     /**
      * <p>createButton</p>
      * Creates the button.
@@ -214,15 +187,7 @@ public class ImageButton extends JPanel {
                 "[fill," + width + "]",
                 "[fill," + height + "]"));
         backgroundColorCurrent = backgroundColorInitial;
-        backgroundColorRCurrent = backgroundColorRInitial;
-        backgroundColorGCurrent = backgroundColorGInitial;
-        backgroundColorBCurrent = backgroundColorBInitial;
-        backgroundColorACurrent = backgroundColorAInitial;
         indentCurrent = indent;
-        backgroundColorRStep = (double) (backgroundColorRFinal - backgroundColorRInitial) / indentSteps;
-        backgroundColorGStep = (double) (backgroundColorGFinal - backgroundColorGInitial) / indentSteps;
-        backgroundColorBStep = (double) (backgroundColorBFinal - backgroundColorBInitial) / indentSteps;
-        backgroundColorAStep = (double) (backgroundColorAFinal - backgroundColorAInitial) / indentSteps;
         label = new JLabel(text);
         label.setFont(font);
         label.setForeground(fontColorInitial);
@@ -234,13 +199,6 @@ public class ImageButton extends JPanel {
         shadow.setForeground(Color.black);
         shadow.setOpaque(false);
         add(shadow, "pos (label.x + 2) (label.y + 2)");
-        try {
-            ImageIcon icon = new ImageIcon(foregroundImage);
-            JLabel iconLabel = new JLabel(icon);
-            add(iconLabel, "pos " + foregroundImageXOffset + " 0");
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
 //      Makes the panels slide instead of accordion effect
         setMinimumSize(new Dimension(width, height));
         setPreferredSize(new Dimension(width,height));
@@ -289,28 +247,23 @@ public class ImageButton extends JPanel {
         
         font = Main.THEME.getFont(categoryNumber, buttonType);
         backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
-        backgroundColorRInitial = backgroundColorInitial.getRed();
-        backgroundColorGInitial = backgroundColorInitial.getGreen();
-        backgroundColorBInitial = backgroundColorInitial.getBlue();
-        backgroundColorAInitial = backgroundColorInitial.getAlpha();
-        
         backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
-        backgroundColorRFinal = backgroundColorFinal.getRed();   
-        backgroundColorGFinal = backgroundColorFinal.getGreen(); 
-        backgroundColorBFinal = backgroundColorFinal.getBlue();  
-        backgroundColorAFinal = backgroundColorFinal.getAlpha(); 
         
+        backgroundColorRStep = (double) (backgroundColorFinal.getRed() - backgroundColorInitial.getRed()) / indentSteps;
+        backgroundColorGStep = (double) (backgroundColorFinal.getGreen() - backgroundColorInitial.getGreen()) / indentSteps;
+        backgroundColorBStep = (double) (backgroundColorFinal.getBlue() - backgroundColorInitial.getBlue()) / indentSteps;
+        backgroundColorAStep = (double) (backgroundColorFinal.getAlpha() - backgroundColorInitial.getAlpha()) / indentSteps;
+        backgroundColors = new Color[indentSteps + 1];
+        backgroundColors[0] = backgroundColorInitial;
+        for (int i = 1; i < backgroundColors.length - 1; i++) {
+            backgroundColors[i] = new Color((int) (backgroundColorInitial.getRed() + i * backgroundColorRStep),
+                    (int) (backgroundColorInitial.getGreen() + i * backgroundColorGStep),
+                    (int) (backgroundColorInitial.getBlue() + i * backgroundColorBStep),
+                    (int) (backgroundColorInitial.getAlpha() + i * backgroundColorAStep));
+        }
+        backgroundColors[backgroundColors.length - 1] = backgroundColorFinal;
         fontColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_i");
-        fontColorRInitial = fontColorInitial.getRed();   
-        fontColorGInitial = fontColorInitial.getGreen(); 
-        fontColorBInitial = fontColorInitial.getBlue();  
-        fontColorAInitial = fontColorInitial.getAlpha(); 
-
         fontColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_f");
-        fontColorRFinal = fontColorFinal.getRed();   
-        fontColorGFinal = fontColorFinal.getGreen(); 
-        fontColorBFinal = fontColorFinal.getBlue();  
-        fontColorAFinal = fontColorFinal.getAlpha();
     }
     
     /**
@@ -443,70 +396,6 @@ public class ImageButton extends JPanel {
     }
     
     /**
-     * <p>redStepUp</p>
-     * Increases red value by 1 step.
-     */
-    private void redStepUp() {
-        backgroundColorRCurrent = forceRGB(backgroundColorRCurrent + backgroundColorRStep);
-    }
-    
-    /**
-     * <p>redStepDown</p>
-     * Decreases red value by 1 step.
-     */
-    private void redStepDown() {
-        backgroundColorRCurrent = forceRGB(backgroundColorRCurrent - backgroundColorRStep);
-    }
-    
-    /**
-     * <p>greenStepUp</p>
-     * Increases green value by 1 step.
-     */
-    private void greenStepUp() {
-        backgroundColorGCurrent = forceRGB(backgroundColorGCurrent + backgroundColorGStep);
-    }
-    
-    /**
-     * <p>greenStepDown</p>
-     * Decreases green value by 1 step.
-     */
-    private void greenStepDown() {
-        backgroundColorGCurrent = forceRGB(backgroundColorGCurrent - backgroundColorGStep);
-    }
-    
-    /**
-     * <p>blueStepUp</p>
-     * Increases blue value by 1 step.
-     */
-    private void blueStepUp() {
-        backgroundColorBCurrent = forceRGB(backgroundColorBCurrent + backgroundColorBStep);
-    }
-    
-    /**
-     * <p>blueStepDown</p>
-     * Decreases blue value by 1 step.
-     */
-    private void blueStepDown() {
-        backgroundColorBCurrent = forceRGB(backgroundColorBCurrent - backgroundColorBStep);
-    }
-    
-    /**
-     * <p>alphaStepUp</p>
-     * Increases alpha value by 1 step.
-     */
-    private void alphaStepUp() {
-        backgroundColorACurrent = forceRGB(backgroundColorACurrent + backgroundColorAStep);
-    }
-    
-    /**
-     * <p>alphaStepDown</p>
-     * Decreases alpha value by 1 step.
-     */
-    private void alphaStepDown() {
-        backgroundColorACurrent = forceRGB(backgroundColorACurrent - backgroundColorAStep);
-    }
-    
-    /**
      * <p>IndentTimerListener.</p>
      * @author Stephen Cheng
      * @version 1.0
@@ -546,32 +435,9 @@ public class ImageButton extends JPanel {
     private class ColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!backgroundColorCurrent.equals(backgroundColorFinal)) {
-                if (backgroundColorRStep > 0 && backgroundColorRCurrent < backgroundColorRFinal) {
-                    redStepUp();
-                } else if (backgroundColorRStep < 0 && backgroundColorRCurrent > backgroundColorRFinal) {
-                    redStepUp();
-                }
-                if (backgroundColorGStep > 0 && backgroundColorGCurrent < backgroundColorGFinal) {
-                    greenStepUp();
-                } else if (backgroundColorGStep < 0 && backgroundColorGCurrent > backgroundColorGFinal) {
-                    greenStepUp();
-                }
-                if (backgroundColorBStep > 0 && backgroundColorBCurrent < backgroundColorBFinal) {
-                    blueStepUp();
-                } else if (backgroundColorBStep < 0 && backgroundColorBCurrent > backgroundColorBFinal) {
-                    blueStepUp();
-                }
-                if (backgroundColorAStep > 0 && backgroundColorACurrent < backgroundColorAFinal) {
-                    alphaStepUp();
-                } else if (backgroundColorAStep < 0 && backgroundColorACurrent > backgroundColorAFinal) {
-                    alphaStepUp();
-                }
-                backgroundColorCurrent = new Color(
-                        (int) Math.round(backgroundColorRCurrent),
-                        (int) Math.round(backgroundColorGCurrent),
-                        (int) Math.round(backgroundColorBCurrent),
-                        (int) Math.round(backgroundColorACurrent));
+            if (backgroundColorIndex != backgroundColors.length - 1) {
+                backgroundColorIndex++;
+//                System.out.println(backgroundColors[backgroundColorIndex].getAlpha());
                 repaint();
             } else {
                 colorStepUpTimer.stop();
@@ -587,32 +453,8 @@ public class ImageButton extends JPanel {
     private class ColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (!backgroundColorCurrent.equals(backgroundColorInitial)) {
-                if (backgroundColorRStep > 0 && backgroundColorRCurrent > backgroundColorRInitial) {
-                    redStepDown();
-                } else if (backgroundColorRStep < 0 && backgroundColorRCurrent < backgroundColorRInitial) {
-                    redStepDown();
-                }
-                if (backgroundColorGStep > 0 && backgroundColorGCurrent > backgroundColorGInitial) {
-                    greenStepDown();
-                } else if (backgroundColorGStep < 0 && backgroundColorGCurrent < backgroundColorGInitial) {
-                    greenStepDown();
-                }
-                if (backgroundColorBStep > 0 && backgroundColorBCurrent > backgroundColorBInitial) {
-                    blueStepDown();
-                } else if (backgroundColorBStep < 0 && backgroundColorBCurrent < backgroundColorBInitial) {
-                    blueStepDown();
-                }
-                if (backgroundColorAStep > 0 && backgroundColorACurrent > backgroundColorAInitial) {
-                    alphaStepDown();
-                } else if (backgroundColorAStep < 0 && backgroundColorACurrent < backgroundColorAInitial) {
-                    alphaStepDown();
-                }
-                backgroundColorCurrent = new Color(
-                        (int) Math.round(backgroundColorRCurrent),
-                        (int) Math.round(backgroundColorGCurrent),
-                        (int) Math.round(backgroundColorBCurrent),
-                        (int) Math.round(backgroundColorACurrent));
+            if (backgroundColorIndex != 0) {
+                backgroundColorIndex--;
                 repaint();
             } else {
                 colorStepDownTimer.stop();
