@@ -18,7 +18,6 @@ import java.net.URISyntaxException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
@@ -369,14 +368,10 @@ public class ImageButton extends JPanel {
      */
     private void buttonTextStepIndent() {
         int xPos = label.getX();
-//        int yPos = label.getY();
         indentCurrent = xPos + 1;
         add(label, "id label, pos " + indentCurrent + " 0.5al");
         add(shadow, "pos (label.x + 2) (label.y + 2)");
-//        label.setLocation(indentCurrent, yPos);
-//        shadow.setLocation(indentCurrent+2, yPos+2);
         revalidate();
-//        repaint();
     }
     
     /**
@@ -385,14 +380,10 @@ public class ImageButton extends JPanel {
      */
     private void buttonTextStepUnindent() {
         int xPos = label.getX();
-//        int yPos = label.getY();
         indentCurrent = xPos - 1;
         add(label, "id label, pos " + indentCurrent + " 0.5al");
         add(shadow, "pos (label.x + 2) (label.y + 2)");
-//        label.setLocation(indentCurrent, yPos);
-//        shadow.setLocation(indentCurrent+2, yPos+2);
         revalidate();
-//        repaint();
     }
     
     /**
@@ -437,7 +428,6 @@ public class ImageButton extends JPanel {
         public void actionPerformed(ActionEvent e) {
             if (backgroundColorIndex != backgroundColors.length - 1) {
                 backgroundColorIndex++;
-//                System.out.println(backgroundColors[backgroundColorIndex].getAlpha());
                 repaint();
             } else {
                 colorStepUpTimer.stop();
@@ -464,7 +454,7 @@ public class ImageButton extends JPanel {
     
     /**
      * <p>forceRGB</p>
-     * Forces a value into range [0, 255].
+     * Forces a value into interval [0, 255].
      * @param i value
      * @return int
      */
@@ -474,7 +464,7 @@ public class ImageButton extends JPanel {
     
     /**
      * <p>forceRGB</p>
-     * Forces a value into range [0.0, 255.0].
+     * Forces a value into interval [0.0, 255.0].
      * @param i value
      * @return double
      */
