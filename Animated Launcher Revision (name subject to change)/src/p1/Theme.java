@@ -262,7 +262,7 @@ public class Theme {
     
     /**
      * <p>createColorRGBA</p>
-     * Creats a color from a string formatted in RGBA.
+     * Creates a color from a string formatted in RGBA.
      * @param color color string
      * @return color
      */
