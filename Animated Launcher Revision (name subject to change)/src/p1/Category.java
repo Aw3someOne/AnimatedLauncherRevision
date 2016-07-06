@@ -4,7 +4,6 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.io.IOException;
 
 import javax.swing.JPanel;
@@ -25,10 +24,10 @@ public class Category extends JPanel {
      */
     private static final long serialVersionUID = 675687574323872635L;
     /**
-     * <p>category</p>
+     * <p>categoryNumber</p>
      * Category number.
      */
-    private int category;
+    private int categoryNumber;
     /**
      * <p>numberOfButtons</p>
      * Number of buttons in the category.
@@ -43,7 +42,7 @@ public class Category extends JPanel {
      * <p>maxHeight</p>
      * Maximum height of the category.
      */
-    private int maxHeight;
+    private int buttonPanelMaxHeight;
     /**
      * <p>header</p>
      * Header button.
@@ -65,6 +64,11 @@ public class Category extends JPanel {
      */
     private int collapseStepAmount;
     /**
+     * <p>isExpanded</p>
+     * Checks if the button panel is expanded.
+     */
+    private boolean isExpanded = true;
+    /**
      * <p>main</p>
      * Main object that is used to invoke methods.
      */
@@ -78,9 +82,9 @@ public class Category extends JPanel {
      * @throws IOException IO error
      */
     public Category(int category, Main main) throws IOException {
-        this.category = category;
+        this.categoryNumber = category;
         this.main = main;
-        section = Main.CONFIG.get("Category" + this.category);
+        section = Main.CONFIG.get("Category" + this.categoryNumber);
         this.numberOfButtons = Integer.parseInt(section.get("numberOfButtons"));
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + Main.HEADER_WIDTH + "]",
@@ -97,9 +101,9 @@ public class Category extends JPanel {
             ImageButton button = new ImageButton(category, i);
             buttonPanel.add(button);
         }
-        header.setButtonPanel(buttonPanel);
+        header.setCategory(this);
         add(buttonPanel);
-        if (this.category + 1 == Main.NUMBER_OF_CATEGORIES) {
+        if (this.categoryNumber + 1 == Main.NUMBER_OF_CATEGORIES) {
             JPanel blackBar = new JPanel();
             blackBar.setBackground(Color.BLACK);
             blackBar.setMinimumSize(new Dimension(Main.HEADER_WIDTH, 10));
@@ -109,13 +113,10 @@ public class Category extends JPanel {
         }
     }
     
-    /* (non-Javadoc)
-     * @see javax.swing.JComponent#paintComponent(java.awt.Graphics)
-     */
     @Override
     public void paintComponent(Graphics g) {
         super.paintComponent(g);
-        Graphics2D gui = (Graphics2D)g;
+        Graphics2D gui = (Graphics2D) g;
         gui.setBackground(Main.CLEAR);
         gui.clearRect(0, 0, this.getWidth(), this.getHeight());
         main.repack();
@@ -126,8 +127,28 @@ public class Category extends JPanel {
      * Collapses the button panel instantly without steps.
      */
     public void collapseInstant() {
-        buttonPanel.setMaximumSize(new Dimension (buttonPanel.getWidth(), 0));
-        header.setIsExpandedFalse();
+        buttonPanel.setMaximumSize(new Dimension(buttonPanel.getWidth(), 0));
+        isExpanded = false;
+        revalidate();
+    }
+    
+    /**
+     * <p>expandStep</p>
+     * Expands the button panel by 1 step.
+     */
+    public void expandStep() {
+        buttonPanel.setMaximumSize(new Dimension(buttonPanel.getWidth(),
+                buttonPanel.getHeight() + expandStepAmount));
+        revalidate();
+    }
+    
+    /**
+     * <p>collapseStep</p>
+     * Collapse the button panel by 1 step.
+     */
+    public void collapseStep() {
+        buttonPanel.setMaximumSize(new Dimension(buttonPanel.getWidth(),
+                buttonPanel.getHeight() - collapseStepAmount));
         revalidate();
     }
     
@@ -138,16 +159,16 @@ public class Category extends JPanel {
     public void collapse() {
         header.expandTimer.stop();
         header.collapseTimer.start();
-        header.setIsExpandedFalse();
+        isExpanded = false;
     }
     
     /**
-     * <p>getMaxHeight</p>
+     * <p>getButtonPanelMaxHeight</p>
      * Gets categories maxHeight.
      * @return maxHeight
      */
-    public int getMaxHeight() {
-        return maxHeight;
+    public int getButtonPanelMaxHeight() {
+        return buttonPanelMaxHeight;
     }
     
     /**
@@ -169,15 +190,40 @@ public class Category extends JPanel {
     }
     
     /**
+     * <p>getIsExpanded</p>
+     * Gets button panel expanded state.
+     * @return isExpanded
+     */
+    public boolean getIsExpanded() {
+        return isExpanded;
+    }
+    
+    /**
+     * <p>getButtonPanel</p>
+     * Gets button panel.
+     * @return buttonPanel
+     */
+    public JPanel getButtonPanel() {
+        return buttonPanel;
+    }
+    
+    /**
+     * <p>setIsExpanded</p>
+     * Sets button panel expanded state.
+     * @param isExpanded boolean
+     */
+    public void setIsExpanded(boolean isExpanded) {
+        this.isExpanded = isExpanded;
+    }
+    
+    /**
      * <p>calculateMaxHeight</p>
      * Calculates the button panel's maximum height.
      */
     public void calculateMaxHeight() {
-        maxHeight = buttonPanel.getHeight();
-        expandStepAmount = maxHeight / Main.EXPAND_STEPS;
-        collapseStepAmount = maxHeight / Main.EXPAND_STEPS;
-        header.setParentMaxHeight(maxHeight);
-        header.setExpandStepAmount(expandStepAmount);
-        header.setCollapseStepAmount(collapseStepAmount);
+        buttonPanelMaxHeight = buttonPanel.getHeight();
+        expandStepAmount = buttonPanelMaxHeight / Main.EXPAND_STEPS;
+        collapseStepAmount = buttonPanelMaxHeight / Main.EXPAND_STEPS;
     }
+    
 }

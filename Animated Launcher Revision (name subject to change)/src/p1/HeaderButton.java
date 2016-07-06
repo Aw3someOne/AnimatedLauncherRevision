@@ -1,6 +1,5 @@
 package p1;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -17,96 +16,102 @@ import javax.swing.Timer;
  */
 public class HeaderButton extends ImageButton {
 
-    private int expandStepAmount;
-    private int collapseStepAmount;
-    private int parentMaxHeight;
-    private boolean isExpanded = true;
-    JPanel buttonPanel;
+    /**
+     * <p>serialVersionUID.</p>
+     */
+    private static final long serialVersionUID = 8369307409097067065L;
+    /**
+     * <p>category</p>
+     * Parent category.
+     */
+    private Category category;
+    /**
+     * <p>buttonPanel</p>
+     * Parent's button panel.
+     */
+    private JPanel buttonPanel;
     
-    public HeaderButton(int category) throws IOException {
-        super(category, -1);
+    /**
+     * <p>HeaderButton</p>
+     * Constructor.
+     * @param categoryNumber categoryNumber
+     * @throws IOException e
+     */
+    public HeaderButton(int categoryNumber) throws IOException {
+        super(categoryNumber, -1);
         addMouseListener(new HeaderButtonMouseAdapter());
         expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
         collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());
     }
     
+    /**
+     * <p>HeaderButtonMouseAdapter.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
         
         @Override
         public void mouseReleased(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
                 for (int i = 0; i < Main.categoryArray.length; i++) {
-                    if (i != category) {
+                    if (i != categoryNumber) {
                         Main.categoryArray[i].collapse();
                     }
                 }
-                if (isExpanded) {
+                if (category.getIsExpanded()) {
                     expandTimer.stop();
                     collapseTimer.start();
-                    isExpanded = false;
+                    category.setIsExpanded(false);
                 } else {
                     collapseTimer.stop();
                     expandTimer.start();
-                    isExpanded = true;
+                    category.setIsExpanded(true);
                 }
             }
         }
     }
     
+    /**
+     * <p>ExpandTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class ExpandTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            System.out.println("expand timer");
-            if (buttonPanel.getHeight() < parentMaxHeight) {
-                expand();
+            if (buttonPanel.getHeight() < category.getButtonPanelMaxHeight()) {
+                category.expandStep();
             } else {
                 expandTimer.stop();
             }
         }
     }
     
+    /**
+     * <p>CollapseTimerListener.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
     private class CollapseTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-//            System.out.println("collapse timer");
             if (buttonPanel.getHeight() > 0) {
-                collapse();
+                category.collapseStep();
             } else {
                 collapseTimer.stop();
             }
         }
     }
     
-    public void setIsExpandedFalse() {
-        isExpanded = false;
-    }
-    
-    public void setButtonPanel(JPanel buttonPanel) {
-        this.buttonPanel = buttonPanel;
-    }
-    
-    public void setExpandStepAmount(int step) {
-        expandStepAmount = step;
-    }
-    
-    public void setCollapseStepAmount(int step) {
-        collapseStepAmount = step;
-    }
-    
-    public void setParentMaxHeight(int height) {
-        parentMaxHeight = height;
-    }
-    
-    private void expand() {
-        buttonPanel.setMaximumSize(new Dimension(buttonPanel.getWidth(),
-                buttonPanel.getHeight() + expandStepAmount));
-        revalidate();
-    }
-    
-    private void collapse() {
-        buttonPanel.setMaximumSize(new Dimension(buttonPanel.getWidth(),
-                buttonPanel.getHeight() - collapseStepAmount));
-        revalidate();
+    /**
+     * <p>setCategory</p>
+     * Sets the category and button panel.
+     * @param category category
+     */
+    public void setCategory(Category category) {
+        this.category = category;
+        this.buttonPanel = category.getButtonPanel();
     }
     
 }

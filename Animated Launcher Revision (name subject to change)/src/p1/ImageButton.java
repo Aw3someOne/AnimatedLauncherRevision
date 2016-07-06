@@ -36,10 +36,10 @@ import net.miginfocom.swing.MigLayout;
 public class ImageButton extends JPanel {
     
     /**
-     * <p>category</p>
+     * <p>categoryNumber</p>
      * Category Number.
      */
-    protected int category;
+    protected int categoryNumber;
     /**
      * <p>buttonNumber</p>
      * Button Number.
@@ -164,7 +164,7 @@ public class ImageButton extends JPanel {
     
     
     public ImageButton(int category, int buttonNumber) throws IOException {
-        this.category = category;
+        this.categoryNumber = category;
         this.buttonNumber = buttonNumber;
         readVariables(category, buttonNumber);
         createButton();
