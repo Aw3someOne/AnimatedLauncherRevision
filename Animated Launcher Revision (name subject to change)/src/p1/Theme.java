@@ -58,6 +58,11 @@ public class Theme {
      * Holds the colors.
      */
     private Map<String, Color> colorMap;
+    /**
+     * <p>imageDirectory</p>
+     * internal image directory.
+     */
+    private String imageDirectory = "images/";
     
     /**
      * <p>Theme</p>
@@ -131,7 +136,7 @@ public class Theme {
                     foregroundImages[i] = ImageIO.read(new File(sections[i].get("ForegroundImage")));
                 } catch (IOException e) {
                     try {
-                        foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream("images/" + sections[i].get("ForegroundImage")));
+                        foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream(imageDirectory + sections[i].get("ForegroundImage")));
                     } catch (IOException e2) {
                         // TODO Auto-generated catch block
                         e2.printStackTrace();
@@ -141,7 +146,7 @@ public class Theme {
         } else {
             for (int i = 0; i < numberOfCategories; i++) {
                 try {
-                    foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream(sections[i].get("ForegroundImage")));
+                    foregroundImages[i] = ImageIO.read(Theme.class.getClassLoader().getResourceAsStream(imageDirectory + sections[i].get("ForegroundImage")));
                 } catch (IOException e) {
                     // TODO Auto-generated catch block
                     e.printStackTrace();
