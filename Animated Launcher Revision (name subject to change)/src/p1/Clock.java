@@ -29,7 +29,7 @@ public class Clock extends JFrame {
      * <p>CLEAR</p>
      * Transparent color.
      */
-    private static final Color CLEAR = new Color(0,0,0,0);
+    private static final Color CLEAR = new Color(0, 0, 0, 0);
     /**
      * <p>GE</p>
      * Graphics Environment.
@@ -136,8 +136,8 @@ public class Clock extends JFrame {
         
         AffineTransform affinetransform = new AffineTransform();
         FontRenderContext frc = new FontRenderContext(affinetransform, true, true);
-        Dimension clockSize = new Dimension((int) CLOCK_FONT.getStringBounds("00:00", frc).getWidth()+10, (int) getFontMetrics(CLOCK_FONT).getHeight());
-        Dimension secondsSize = new Dimension((int) SECONDS_FONT.getStringBounds("00", frc).getWidth()+10, (int) getFontMetrics(SECONDS_FONT).getHeight());
+        Dimension clockSize = new Dimension((int) CLOCK_FONT.getStringBounds("00:00", frc).getWidth() + 10, (int) getFontMetrics(CLOCK_FONT).getHeight());
+        Dimension secondsSize = new Dimension((int) SECONDS_FONT.getStringBounds("00", frc).getWidth() + 10, (int) getFontMetrics(SECONDS_FONT).getHeight());
         
         currentTimeFormat = TIME_FORMAT;
         
@@ -158,7 +158,7 @@ public class Clock extends JFrame {
         time.addMouseListener(new ClockMouseAdapter());
         time.setMinimumSize(clockSize);
         time.setOpaque(true);
-        time.setBackground(new Color(0,0,0,1));
+        time.setBackground(new Color(0, 0, 0, 1));
         panel.add(time, "align right top");
         
         seconds = new JLabel(SECONDS_FORMAT.format(date), SwingConstants.RIGHT);

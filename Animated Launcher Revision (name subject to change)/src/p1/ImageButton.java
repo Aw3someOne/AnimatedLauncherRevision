@@ -35,6 +35,10 @@ import net.miginfocom.swing.MigLayout;
 public class ImageButton extends JPanel {
     
     /**
+     * <p>serialVersionUID.</p>
+     */
+    private static final long serialVersionUID = 6716927459100501280L;
+    /**
      * <p>categoryNumber</p>
      * Category Number.
      */
@@ -128,22 +132,39 @@ public class ImageButton extends JPanel {
     
     protected Color fontColorInitial;
     protected Color fontColorFinal;
+    protected Color[] fontColors;
     
     protected int indent;
     protected int indentCurrent;
-    protected int indentSteps;
-    protected int indentDuration;
-    protected int indentSleep;
+    protected int textIndentSteps;
+    protected int textIndentDuration;
+    protected int textIndentSleep;
+    protected int textIndentIndex;
+    protected int[] textIndents;
     protected Timer indentTimer;
     protected Timer unindentTimer;
-    protected Timer colorStepUpTimer;
-    protected Timer colorStepDownTimer;
+    protected Timer backgroundColorStepUpTimer;
+    protected Timer backgroundColorStepDownTimer;
     
     protected Timer expandTimer;
     protected Timer collapseTimer;
     
     protected Font font;
     protected int buttonWidth;
+    protected int imageBound;
+    protected int backgroundColorFadeSteps;
+    protected int backgroundColorFadeDuration;
+    protected int backgroundColorFadeSleep;
+    protected int textIndentInitial;
+    protected int textIndentFinal;
+    private double textIndentStep;
+    private String buttonType;
+    protected int fontColorIndex;
+    private int fontColorFadeSteps;
+    private int fontColorFadeDuration;
+    private int fontColorFadeSleep;
+    private Timer fontColorStepUpTimer;
+    private Timer fontColorStepDownTimer;
     
     /**
      * <p>ImageButton</p>
@@ -155,12 +176,19 @@ public class ImageButton extends JPanel {
     public ImageButton(int categoryNumber, int buttonNumber) throws IOException {
         this.categoryNumber = categoryNumber;
         this.buttonNumber = buttonNumber;
-        readVariables(categoryNumber, buttonNumber);
+        if (buttonNumber == -1) {
+            buttonType = "header";
+        } else {
+            buttonType = "button";
+        }
+        readVariables();
         createButton();
-        indentTimer = new Timer(indentSleep, new IndentTimerListener());
-        unindentTimer = new Timer(indentSleep, new UnindentTimerListener());
-        colorStepUpTimer = new Timer(indentSleep, new ColorStepUpTimerListener());
-        colorStepDownTimer = new Timer(indentSleep, new ColorStepDownTimerListener());
+        indentTimer = new Timer(textIndentSleep, new IndentTimerListener());
+        unindentTimer = new Timer(textIndentSleep, new UnindentTimerListener());
+        backgroundColorStepUpTimer = new Timer(backgroundColorFadeSleep, new BackgroundColorStepUpTimerListener());
+        backgroundColorStepDownTimer = new Timer(backgroundColorFadeSleep, new BackgroundColorStepDownTimerListener());
+        fontColorStepUpTimer = new Timer(fontColorFadeSleep, new FontColorStepUpTimerListener());
+        fontColorStepDownTimer = new Timer(fontColorFadeSleep, new FontColorStepDownTimerListener());
         if (buttonNumber != -1) {
             addMouseListener(new ImageButtonMouseAdapter());
         }
@@ -192,7 +220,7 @@ public class ImageButton extends JPanel {
         label.setForeground(fontColorInitial);
         label.setOpaque(false);
         label.setBackground(Main.CLEAR);
-        add(label, "id label, pos " + indentCurrent + " 0.5al");
+        add(label, "id label, pos " + textIndents[textIndentIndex] + " 0.5al");
         shadow = new JLabel(text);
         shadow.setFont(font);
         shadow.setForeground(Color.black);
@@ -200,59 +228,61 @@ public class ImageButton extends JPanel {
         add(shadow, "pos (label.x + 2) (label.y + 2)");
 //      Makes the panels slide instead of accordion effect
         setMinimumSize(new Dimension(width, height));
-        setPreferredSize(new Dimension(width,height));
-        setMaximumSize(new Dimension(width,height));
+        setPreferredSize(new Dimension(width, height));
+        setMaximumSize(new Dimension(width, height));
     }
     
     /**
      * <p>readVariables</p>
      * Reads the config files and stores variables.
-     * @param categoryNumber category number
-     * @param buttonNumber button number
      * @throws IOException e
      */
-    private void readVariables(int categoryNumber, int buttonNumber) throws IOException {
+    private void readVariables() throws IOException {
         Ini.Section section = Main.CONFIG.get("Category" + categoryNumber);
-        buttonWidth = Main.BUTTON_WIDTH;
-        width = Math.max(Main.BUTTON_WIDTH, Main.IMAGE_BOUND);
-        height = Main.BUTTON_HEIGHT;
-        indent = Main.TEXT_INDENT;
-        indentSteps = Main.TEXT_INDENT_STEPS;
-        indentDuration = Main.TEXT_INDENT_DURATION;
-        indentSleep = Main.TEXT_INDENT_SLEEP;
-        
-        String buttonType;
-        if (buttonNumber == -1) {
-            buttonType = "header";
-            buttonWidth = Main.HEADER_WIDTH;
-            width = Main.HEADER_WIDTH;
-            height = Main.HEADER_HEIGHT;
-            indent = Main.HEADER_TEXT_INDENT;
-            indentSteps = Main.TEXT_INDENT_STEPS;
-            indentDuration = Main.TEXT_INDENT_DURATION;
-            indentSleep = Main.TEXT_INDENT_SLEEP;
-        } else {
-            buttonType = "button";
+        buttonWidth = Main.THEME.getValue(buttonType + "Width");
+        imageBound = Main.THEME.getValue("imageBound");
+        width = Math.max(buttonWidth, imageBound);
+        height = Main.THEME.getValue(buttonType + "Height");
+        textIndentInitial = Main.THEME.getValue(buttonType + "TextIndent_i");
+        textIndentFinal = Main.THEME.getValue(buttonType + "TextIndent_f");
+        textIndentSteps = Main.THEME.getValue(buttonType + "TextIndentSteps");
+        textIndentStep = (double) (textIndentFinal - textIndentInitial) / textIndentSteps;
+        textIndentDuration = Main.THEME.getValue(buttonType + "TextIndentDuration");
+        textIndentSleep = textIndentDuration / textIndentSteps;
+        backgroundColorFadeSteps = Main.THEME.getValue(buttonType + "BackgroundColorFadeSteps");
+        backgroundColorFadeDuration = Main.THEME.getValue(buttonType + "BackgroundColorFadeDuration");
+        if (backgroundColorFadeSteps > 0) {
+            backgroundColorFadeSleep = backgroundColorFadeDuration / backgroundColorFadeSteps;
+        }
+        fontColorFadeSteps = Main.THEME.getValue(buttonType + "FontColorFadeSteps");
+        fontColorFadeDuration = Main.THEME.getValue(buttonType + "FontColorFadeDuration");
+        if (fontColorFadeSteps > 0) {
+            fontColorFadeSleep = fontColorFadeDuration / fontColorFadeSteps;
+        }
+        if (buttonType.equals("button")) {
             action = section.get("button" + buttonNumber + "Action");
             foregroundImage = Main.THEME.getImage(categoryNumber);
             foregroundImageXOffset = Main.THEME.getValue("Category" + categoryNumber + "ForegroundImageXOffset");
             foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
             foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
             foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
-            foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
+            try {
+                foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
         }
         
         text = section.get(buttonType + ((buttonNumber == -1) ? "" : buttonNumber) + "Text");
-        
         font = Main.THEME.getFont(categoryNumber, buttonType);
         backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
         backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
         
-        backgroundColorRStep = (double) (backgroundColorFinal.getRed() - backgroundColorInitial.getRed()) / indentSteps;
-        backgroundColorGStep = (double) (backgroundColorFinal.getGreen() - backgroundColorInitial.getGreen()) / indentSteps;
-        backgroundColorBStep = (double) (backgroundColorFinal.getBlue() - backgroundColorInitial.getBlue()) / indentSteps;
-        backgroundColorAStep = (double) (backgroundColorFinal.getAlpha() - backgroundColorInitial.getAlpha()) / indentSteps;
-        backgroundColors = new Color[indentSteps + 1];
+        backgroundColorRStep = (double) (backgroundColorFinal.getRed() - backgroundColorInitial.getRed()) / backgroundColorFadeSteps;
+        backgroundColorGStep = (double) (backgroundColorFinal.getGreen() - backgroundColorInitial.getGreen()) / backgroundColorFadeSteps;
+        backgroundColorBStep = (double) (backgroundColorFinal.getBlue() - backgroundColorInitial.getBlue()) / backgroundColorFadeSteps;
+        backgroundColorAStep = (double) (backgroundColorFinal.getAlpha() - backgroundColorInitial.getAlpha()) / backgroundColorFadeSteps;
+        backgroundColors = new Color[backgroundColorFadeSteps + 1];
         backgroundColors[0] = backgroundColorInitial;
         for (int i = 1; i < backgroundColors.length - 1; i++) {
             backgroundColors[i] = new Color((int) (backgroundColorInitial.getRed() + i * backgroundColorRStep),
@@ -263,6 +293,25 @@ public class ImageButton extends JPanel {
         backgroundColors[backgroundColors.length - 1] = backgroundColorFinal;
         fontColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_i");
         fontColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_f");
+        double fontColorRStep = (double) (fontColorFinal.getRed() - fontColorInitial.getRed()) / backgroundColorFadeSteps;
+        double fontColorGStep = (double) (fontColorFinal.getGreen() - fontColorInitial.getGreen()) / backgroundColorFadeSteps;
+        double fontColorBStep = (double) (fontColorFinal.getBlue() - fontColorInitial.getBlue()) / backgroundColorFadeSteps;
+        double fontColorAStep = (double) (fontColorFinal.getAlpha() - fontColorInitial.getAlpha()) / backgroundColorFadeSteps;
+        fontColors = new Color[fontColorFadeSteps + 1];
+        fontColors[0] = fontColorInitial;
+        for (int i = 1; i < fontColors.length - 1; i++) {
+            fontColors[i] = new Color((int) (fontColorInitial.getRed() + i * fontColorRStep),
+                    (int) (fontColorInitial.getGreen() + i * fontColorGStep),
+                    (int) (fontColorInitial.getBlue() + i * fontColorBStep),
+                    (int) (fontColorInitial.getAlpha() + i * fontColorAStep));
+        }
+        fontColors[fontColors.length - 1] = fontColorFinal;
+        textIndents = new int[textIndentSteps + 1];
+        textIndents[0] = textIndentInitial;
+        for (int i = 1; i < textIndents.length - 1; i++) {
+            textIndents[i] = (int) (textIndentInitial + i * textIndentStep);
+        }
+        textIndents[textIndents.length - 1] = textIndentFinal;
     }
     
     /**
@@ -275,17 +324,21 @@ public class ImageButton extends JPanel {
         @Override
         public void mouseEntered(MouseEvent e) {
             unindentTimer.stop();
-            colorStepDownTimer.stop();
             indentTimer.start();
-            colorStepUpTimer.start();
+            backgroundColorStepDownTimer.stop();
+            backgroundColorStepUpTimer.start();
+            fontColorStepDownTimer.stop();
+            fontColorStepUpTimer.start();
         }
-        
+
         @Override
         public void mouseExited(MouseEvent e) {
             indentTimer.stop();
-            colorStepUpTimer.stop();
             unindentTimer.start();
-            colorStepDownTimer.start();
+            backgroundColorStepUpTimer.stop();
+            backgroundColorStepDownTimer.start();
+            fontColorStepUpTimer.stop();
+            fontColorStepDownTimer.start();
         }
     }
     
@@ -362,28 +415,16 @@ public class ImageButton extends JPanel {
         desktop.open(new File(action));
     }
     
-    /**
-     * <p>buttonTextStepIndent</p>
-     * Indents the text by 1 step.
-     */
-    private void buttonTextStepIndent() {
-        int xPos = label.getX();
-        indentCurrent = xPos + 1;
-        add(label, "id label, pos " + indentCurrent + " 0.5al");
+    private void repositionText() {
+        add(label, "id label, pos " + textIndents[textIndentIndex] + " 0.5al");
         add(shadow, "pos (label.x + 2) (label.y + 2)");
         revalidate();
+        repaint();
     }
     
-    /**
-     * <p>buttonTextStepUnindent</p>
-     * Unindents the text by 1 step.
-     */
-    private void buttonTextStepUnindent() {
-        int xPos = label.getX();
-        indentCurrent = xPos - 1;
-        add(label, "id label, pos " + indentCurrent + " 0.5al");
-        add(shadow, "pos (label.x + 2) (label.y + 2)");
-        revalidate();
+    private void recolorText() {
+        label.setForeground(fontColors[fontColorIndex]);
+        repaint();
     }
     
     /**
@@ -394,8 +435,9 @@ public class ImageButton extends JPanel {
     private class IndentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (label.getX() < indent + indentSteps) {
-                buttonTextStepIndent();
+            if (textIndentIndex != textIndents.length - 1) {
+                textIndentIndex++;
+                repositionText();
             } else {
                 indentTimer.stop();
             }
@@ -410,8 +452,9 @@ public class ImageButton extends JPanel {
     private class UnindentTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (label.getX() > indent) {
-                buttonTextStepUnindent();
+            if (textIndentIndex != 0) {
+                textIndentIndex--;
+                repositionText();
             } else {
                 unindentTimer.stop();
             }
@@ -419,35 +462,59 @@ public class ImageButton extends JPanel {
     }
     
     /**
-     * <p>ColorStepUpTimerListener.</p>
+     * <p>BackgroundColorStepUpTimerListener.</p>
      * @author Stephen Cheng
      * @version 1.0
      */
-    private class ColorStepUpTimerListener implements ActionListener {
+    private class BackgroundColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (backgroundColorIndex != backgroundColors.length - 1) {
                 backgroundColorIndex++;
                 repaint();
             } else {
-                colorStepUpTimer.stop();
+                backgroundColorStepUpTimer.stop();
             }
         }
     }
     
     /**
-     * <p>ColorStepDownTimerListener.</p>
+     * <p>BackgroundColorStepDownTimerListener.</p>
      * @author Stephen Cheng
      * @version 1.0
      */
-    private class ColorStepDownTimerListener implements ActionListener {
+    private class BackgroundColorStepDownTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
             if (backgroundColorIndex != 0) {
                 backgroundColorIndex--;
                 repaint();
             } else {
-                colorStepDownTimer.stop();
+                backgroundColorStepDownTimer.stop();
+            }
+        }
+    }
+    
+    private class FontColorStepUpTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (fontColorIndex != fontColors.length - 1) {
+                fontColorIndex++;
+                recolorText();
+            } else {
+                fontColorStepUpTimer.stop();
+            }
+        }
+    }
+    
+    private class FontColorStepDownTimerListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            if (fontColorIndex != 0) {
+                fontColorIndex--;
+                recolorText();
+            } else {
+                fontColorStepDownTimer.stop();
             }
         }
     }

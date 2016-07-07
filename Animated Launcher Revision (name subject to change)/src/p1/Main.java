@@ -88,11 +88,7 @@ public class Main extends JFrame {
     public static final int IMAGE_BOUND = THEME.getValue("imageBound");
     public static final int BUTTON_HEIGHT = THEME.getValue("buttonHeight");
     public static final int BUTTON_SPACING = THEME.getValue("buttonSpacing");
-    public static final int HEADER_TEXT_INDENT = THEME.getValue("headerTextIndent");
-    public static final int TEXT_INDENT = THEME.getValue("textIndent");
-    public static final int TEXT_INDENT_STEPS = THEME.getValue("textIndentSteps");
-    public static final int TEXT_INDENT_DURATION = THEME.getValue("textIndentDuration");
-    public static final int TEXT_INDENT_SLEEP = TEXT_INDENT_DURATION / TEXT_INDENT_STEPS;
+    
     public static final int EXPAND_STEPS = THEME.getValue("expandSteps");
     public static final int EXPAND_DURATION = THEME.getValue("expandDuration");
     public static final int EXPAND_SLEEP = EXPAND_DURATION / EXPAND_STEPS;

@@ -113,10 +113,24 @@ public class Theme {
         valueMap.put("buttonHeight", Integer.parseInt(system.get("buttonHeight")));
         valueMap.put("imageBound", Integer.parseInt(system.get("imageBound")));
         valueMap.put("buttonSpacing", Integer.parseInt(system.get("buttonSpacing")));
-        valueMap.put("headerTextIndent", Integer.parseInt(system.get("headerTextIndent")));
-        valueMap.put("textIndent", Integer.parseInt(system.get("textIndent")));
-        valueMap.put("textIndentSteps", Integer.parseInt(system.get("textIndentSteps")));
-        valueMap.put("textIndentDuration", Integer.parseInt(system.get("textIndentDuration")));
+        
+        valueMap.put("headerTextIndent_i", Integer.parseInt(system.get("headerTextIndent_i")));
+        valueMap.put("headerTextIndent_f", Integer.parseInt(system.get("headerTextIndent_f")));
+        valueMap.put("headerTextIndentSteps", Integer.parseInt(system.get("headerTextIndentSteps")));
+        valueMap.put("headerTextIndentDuration", Integer.parseInt(system.get("headerTextIndentDuration")));
+        valueMap.put("headerBackgroundColorFadeSteps", Integer.parseInt(system.get("headerBackgroundColorFadeSteps")));
+        valueMap.put("headerBackgroundColorFadeDuration", Integer.parseInt(system.get("headerBackgroundColorFadeDuration")));
+        valueMap.put("headerFontColorFadeSteps", Integer.parseInt(system.get("headerFontColorFadeSteps")));
+        valueMap.put("headerFontColorFadeDuration", Integer.parseInt(system.get("headerFontColorFadeDuration")));
+        valueMap.put("buttonTextIndent_i", Integer.parseInt(system.get("buttonTextIndent_i")));
+        valueMap.put("buttonTextIndent_f", Integer.parseInt(system.get("buttonTextIndent_f")));
+        valueMap.put("buttonTextIndentSteps", Integer.parseInt(system.get("buttonTextIndentSteps")));
+        valueMap.put("buttonTextIndentDuration", Integer.parseInt(system.get("buttonTextIndentDuration")));
+        valueMap.put("buttonBackgroundColorFadeSteps", Integer.parseInt(system.get("buttonBackgroundColorFadeSteps")));
+        valueMap.put("buttonBackgroundColorFadeDuration", Integer.parseInt(system.get("buttonBackgroundColorFadeDuration")));
+        valueMap.put("buttonFontColorFadeSteps", Integer.parseInt(system.get("buttonFontColorFadeSteps")));
+        valueMap.put("buttonFontColorFadeDuration", Integer.parseInt(system.get("buttonFontColorFadeDuration")));
+        
         valueMap.put("expandSteps", Integer.parseInt(system.get("expandSteps")));
         valueMap.put("expandDuration", Integer.parseInt(system.get("expandDuration")));
         valueMap.put("winX", Integer.parseInt(system.get("winX")));
