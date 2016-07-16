@@ -35,6 +35,19 @@ public class Theme {
     }
     
     /**
+     * <p>BackgroundColorMode.</p>
+     * @author Stephen Cheng
+     * @version 1.0
+     */
+    public enum BackgroundColorMode {
+        SOLID,
+        VERTICAL_GRADIENT,
+        HORIZONTAL_GRADIENT,
+        HORIZONTAL_BANDS,
+        HORIZONTAL_BANDED_GRADIENT;
+    }
+    
+    /**
      * <p>GE.</p>
      */
     private static final GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
@@ -131,6 +144,16 @@ public class Theme {
         valueMap.put("buttonFontColorFadeSteps", Integer.parseInt(system.get("buttonFontColorFadeSteps")));
         valueMap.put("buttonFontColorFadeDuration", Integer.parseInt(system.get("buttonFontColorFadeDuration")));
         
+        BackgroundColorMode bgMode = BackgroundColorMode.SOLID;
+        String bgModeString = system.get("bgMode");
+        for (BackgroundColorMode b : BackgroundColorMode.values()) {
+            if (BackgroundColorMode.valueOf(bgModeString).equals(b)) {
+                bgMode = b;
+                break;
+            }
+        }
+        valueMap.put("backgroundColorMode", bgMode.ordinal());
+        
         valueMap.put("expandSteps", Integer.parseInt(system.get("expandSteps")));
         valueMap.put("expandDuration", Integer.parseInt(system.get("expandDuration")));
         valueMap.put("winX", Integer.parseInt(system.get("winX")));
@@ -181,7 +204,38 @@ public class Theme {
             colorMap.put("Category" + i + "headerFontColor_f", createColorARGB(sections[i].get("headerFontColor_f")));
             colorMap.put("Category" + i + "buttonFontColor_i", createColorARGB(sections[i].get("buttonFontColor_i")));
             colorMap.put("Category" + i + "buttonFontColor_f", createColorARGB(sections[i].get("buttonFontColor_f")));
-
+            switch (bgMode) {
+            case SOLID:
+                break;
+            case VERTICAL_GRADIENT:
+                break;
+            case HORIZONTAL_GRADIENT:
+                break;
+            case HORIZONTAL_BANDS:
+                colorMap.put("Category" + i + "headerBackgroundColor_i_gradientStart", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientStart")));
+                colorMap.put("Category" + i + "headerBackgroundColor_i_gradientEnd", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientEnd")));
+                colorMap.put("Category" + i + "headerBackgroundColor_f_gradientStart", createColorARGB(sections[i].get("headerBackgroundColor_f_gradientStart")));
+                colorMap.put("Category" + i + "headerBackgroundColor_f_gradientEnd", createColorARGB(sections[i].get("headerBackgroundColor_f_gradientEnd")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientStart", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientStart")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientEnd", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientEnd")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientStart", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientStart")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientEnd", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientEnd")));
+                break;
+            case HORIZONTAL_BANDED_GRADIENT:
+                colorMap.put("Category" + i + "headerBackgroundColor_i_gradientStart", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientStart")));
+                colorMap.put("Category" + i + "headerBackgroundColor_i_gradientEnd", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientEnd")));
+                colorMap.put("Category" + i + "headerBackgroundColor_f_gradientStart", createColorARGB(sections[i].get("headerBackgroundColor_f_gradientStart")));
+                colorMap.put("Category" + i + "headerBackgroundColor_f_gradientEnd", createColorARGB(sections[i].get("headerBackgroundColor_f_gradientEnd")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientStart", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientStart")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientEnd", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientEnd")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientStart", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientStart")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientEnd", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientEnd")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientStart_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientStart_endPoint")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientEnd_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientEnd_endPoint")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientStart_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientStart_endPoint")));
+                colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientEnd_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientEnd_endPoint")));
+                break;
+            }
             fontMap.put("clockFont", createFont(clock.get("clockFontFace"), Font.PLAIN, Integer.parseInt(clock.get("clockFontSize"))));
             fontMap.put("smallFont", createFont(clock.get("smallFontFace"), Font.PLAIN, Integer.parseInt(clock.get("smallFontSize"))));
             fontMap.put("textFont", createFont(clock.get("textFontFace"), Font.PLAIN, Integer.parseInt(clock.get("textFontSize"))));

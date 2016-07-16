@@ -38,7 +38,7 @@ public class HeaderButton extends ImageButton {
      * @throws IOException e
      */
     public HeaderButton(int categoryNumber) throws IOException {
-        super(categoryNumber, -1);
+        super(categoryNumber, -1, null);
         addMouseListener(new HeaderButtonMouseAdapter());
         expandTimer = new Timer(Main.EXPAND_SLEEP, new ExpandTimerListener());
         collapseTimer = new Timer(Main.EXPAND_SLEEP, new CollapseTimerListener());

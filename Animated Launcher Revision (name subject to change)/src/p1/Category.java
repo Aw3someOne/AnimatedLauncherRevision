@@ -5,12 +5,15 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.swing.JPanel;
 
 import org.ini4j.Ini;
 
 import net.miginfocom.swing.MigLayout;
+import p1.Theme.BackgroundColorMode;
 
 /**
  * <p>Category.</p>
@@ -68,6 +71,16 @@ public class Category extends JPanel {
      * Checks if the button panel is expanded.
      */
     private boolean isExpanded = true;
+    private int backgroundColorMode;
+    public Color[] headerBackgroundColorsInitial;
+    public Color[] headerBackgroundColorsFinal;
+    public Color[] headerBackgroundColorsInitialEndPoint;
+    public Color[] headerBackgroundColorsFinalEndPoint;
+    public Color[] buttonBackgroundColorsInitial;
+    public Color[] buttonBackgroundColorsFinal;
+    public Color[] buttonBackgroundColorsInitialEndPoint;
+    public Color[] buttonBackgroundColorsFinalEndPoint;
+    private Map<String, Color[]> colorMap;
     /**
      * <p>main</p>
      * Main object that is used to invoke methods.
@@ -91,6 +104,45 @@ public class Category extends JPanel {
                 "[fill," + Main.HEADER_HEIGHT + "]0[fill]0"));
         setBackground(Main.CLEAR);
         
+        backgroundColorMode = Main.THEME.getValue("backgroundColorMode");
+        colorMap = new HashMap<String, Color[]>();
+        switch (BackgroundColorMode.values()[backgroundColorMode]) {
+        case SOLID:
+            break;
+        case VERTICAL_GRADIENT:
+            break;
+        case HORIZONTAL_GRADIENT:
+            break;
+        case HORIZONTAL_BANDS:
+            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+                    numberOfButtons);
+            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+                    numberOfButtons);
+            colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
+            colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
+            break;
+        case HORIZONTAL_BANDED_GRADIENT:
+            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+                    numberOfButtons);
+            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+                    numberOfButtons);
+            buttonBackgroundColorsInitialEndPoint = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart_endPoint"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd_endPoint"),
+                    numberOfButtons);
+            buttonBackgroundColorsFinalEndPoint = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart_endPoint"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd_endPoint"),
+                    numberOfButtons);
+            colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
+            colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
+            colorMap.put("buttonBackgroundColorsInitialEndPoint", buttonBackgroundColorsInitialEndPoint);
+            colorMap.put("buttonBackgroundColorsFinalEndPoint", buttonBackgroundColorsFinalEndPoint);
+            break;
+        }
+        
         header = new HeaderButton(category);
         add(header);
         buttonPanel = new JPanel(new MigLayout("wrap 1, insets 0",
@@ -98,7 +150,7 @@ public class Category extends JPanel {
                 "[grow, fill," + Main.BUTTON_HEIGHT + "]" + Main.BUTTON_SPACING + "[grow, fill," + Main.BUTTON_HEIGHT + "]"));
         buttonPanel.setBackground(Main.CLEAR);
         for (int i = 0; i < numberOfButtons; i++) {
-            ImageButton button = new ImageButton(category, i);
+            ImageButton button = new ImageButton(category, i, this);
             buttonPanel.add(button);
         }
         header.setCategory(this);
@@ -111,6 +163,7 @@ public class Category extends JPanel {
             blackBar.setMaximumSize(new Dimension(Main.HEADER_WIDTH, 10));
             add(blackBar);
         }
+
     }
     
     @Override
@@ -160,6 +213,16 @@ public class Category extends JPanel {
         header.expandTimer.stop();
         header.collapseTimer.start();
         isExpanded = false;
+    }
+    
+    /**
+     * <p>getColorArray</p>
+     * Gets a color array from the map.
+     * @param key key
+     * @return color array
+     */
+    public Color[] getColorArray(String key) {
+        return colorMap.get(key);
     }
     
     /**
