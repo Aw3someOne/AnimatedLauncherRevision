@@ -1,5 +1,6 @@
 package p1;
 
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -49,24 +50,28 @@ public class HeaderButton extends ImageButton {
      * @author Stephen Cheng
      * @version 1.0
      */
-    private class HeaderButtonMouseAdapter extends ImageButtonMouseAdapter {
+    private class HeaderButtonMouseAdapter extends BaseButtonMouseAdapter {
         
         @Override
         public void mouseReleased(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
-                for (int i = 0; i < Main.categoryArray.length; i++) {
-                    if (i != categoryNumber) {
-                        Main.categoryArray[i].collapse();
+                Point mouse = e.getPoint();
+                boolean isHovered = buttonRect.contains(mouse);
+                if (isHovered) {
+                    for (int i = 0; i < Main.categoryArray.length; i++) {
+                        if (i != categoryNumber) {
+                            Main.categoryArray[i].collapse();
+                        }
                     }
-                }
-                if (category.getIsExpanded()) {
-                    expandTimer.stop();
-                    collapseTimer.start();
-                    category.setIsExpanded(false);
-                } else {
-                    collapseTimer.stop();
-                    expandTimer.start();
-                    category.setIsExpanded(true);
+                    if (category.getIsExpanded()) {
+                        expandTimer.stop();
+                        collapseTimer.start();
+                        category.setIsExpanded(false);
+                    } else {
+                        collapseTimer.stop();
+                        expandTimer.start();
+                        category.setIsExpanded(true);
+                    }
                 }
             }
         }

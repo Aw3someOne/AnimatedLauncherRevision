@@ -7,6 +7,8 @@ import java.awt.Font;
 import java.awt.GradientPaint;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -49,22 +51,22 @@ public class ImageButton extends JPanel {
      * <p>buttonNumber</p>
      * Button Number.
      */
-    protected int buttonNumber;
+    private int buttonNumber;
     /**
      * <p>text</p>
      * Text that is displayed on the button.
      */
-    protected String text;
+    private String text;
     /**
      * <p>action</p>
      * Action that is performed when the button is clicked.
      */
-    protected String action;
+    private String action;
     /**
      * <p>width</p>
      * Button width.
      */
-    protected int width;
+    private int width;
     /**
      * <p>height</p>
      * Button height.
@@ -74,89 +76,69 @@ public class ImageButton extends JPanel {
      * <p>backgroundColors</p>
      * Stores the background color steps.
      */
-    protected Color[] backgroundColors;
+    private Color[] backgroundColors;
     /**
      * <p>backgroundColors_2</p>
      * Stores the background color steps
      */
-    protected Color[] backgroundColors_2;
+    private Color[] backgroundColors_2;
     /**
      * <p>backgroundColorIndex</p>
      * Uses to step through the background color array.
      */
-    protected int backgroundColorIndex;
-    /**
-     * <p>backgroundColorRStep</p>
-     * Amount that the background color (Red) changes when mouseover.
-     */
-    protected double backgroundColorRStep;
-    /**
-     * <p>backgroundColorGStep</p>
-     * Amount that the background color (Green) changes when mouseover.
-     */
-    protected double backgroundColorGStep;
-    /**
-     * <p>backgroundColorBStep</p>
-     * Amount that the background color (Blue) changes when mouseover.
-     */
-    protected double backgroundColorBStep;
-    /**
-     * <p>backgroundColorAStep</p>
-     * Amount that the background color (Alpha) changes when mouseover.
-     */
-    protected double backgroundColorAStep;
+    private int backgroundColorIndex;
     /**
      * <p>foregroundImage</p>
      * Image that is displayed over the background color.
      */
-    protected BufferedImage foregroundImage;
+    private BufferedImage foregroundImage;
     /**
      * <p>foregroundImageXOffset</p>
      * Distance from left edge of button to display image.
      */
-    protected int foregroundImageXOffset;
-    protected int foregroundImageYOffset;
-    protected int foregroundImageXCrop;
-    protected int foregroundImageYCrop;
+    private int foregroundImageXOffset;
+    private int foregroundImageYOffset;
+    private int foregroundImageXCrop;
+    private int foregroundImageYCrop;
     
-    protected JLabel label;
-    protected JLabel shadow;
+    private JLabel label;
+    private JLabel shadow;
     
-    protected Color fontColorInitial;
-    protected Color fontColorFinal;
-    protected Color[] fontColors;
+    private Color fontColorInitial;
+    private Color fontColorFinal;
+    private Color[] fontColors;
     
-    protected int indent;
-    protected int indentCurrent;
-    protected int textIndentSteps;
-    protected int textIndentDuration;
-    protected int textIndentSleep;
-    protected int textIndentIndex;
-    protected int[] textIndents;
-    protected Timer indentTimer;
-    protected Timer unindentTimer;
-    protected Timer backgroundColorStepUpTimer;
-    protected Timer backgroundColorStepDownTimer;
+    private int indent;
+    private int textIndentSteps;
+    private int textIndentDuration;
+    private int textIndentSleep;
+    private int textIndentIndex;
+    private int[] textIndents;
+    private Timer indentTimer;
+    private Timer unindentTimer;
+    private Timer backgroundColorStepUpTimer;
+    private Timer backgroundColorStepDownTimer;
     
     protected Timer expandTimer;
     protected Timer collapseTimer;
     
-    protected Font font;
+    private Font font;
     protected int buttonWidth;
-    protected int imageBound;
-    protected int backgroundColorFadeSteps;
-    protected int backgroundColorFadeDuration;
-    protected int backgroundColorFadeSleep;
-    protected int textIndentInitial;
-    protected int textIndentFinal;
+    private int imageBound;
+    private int backgroundColorFadeSteps;
+    private int backgroundColorFadeDuration;
+    private int backgroundColorFadeSleep;
+    private int textIndentInitial;
+    private int textIndentFinal;
     private String buttonType;
-    protected int fontColorIndex;
+    private int fontColorIndex;
     private int fontColorFadeSteps;
     private int fontColorFadeDuration;
     private int fontColorFadeSleep;
     private Timer fontColorStepUpTimer;
     private Timer fontColorStepDownTimer;
     private Category category;
+    protected Rectangle buttonRect;
     
     /**
      * <p>ImageButton</p>
@@ -182,8 +164,10 @@ public class ImageButton extends JPanel {
         backgroundColorStepDownTimer = new Timer(backgroundColorFadeSleep, new BackgroundColorStepDownTimerListener());
         fontColorStepUpTimer = new Timer(fontColorFadeSleep, new FontColorStepUpTimerListener());
         fontColorStepDownTimer = new Timer(fontColorFadeSleep, new FontColorStepDownTimerListener());
-        if (buttonNumber != -1) {
-            addMouseListener(new ImageButtonMouseAdapter());
+        if (buttonType.equals("button")) {
+            ImageButtonMouseAdapter adapter = new ImageButtonMouseAdapter();
+            addMouseListener(adapter);
+            addMouseMotionListener(adapter);
         }
     }
     
@@ -194,19 +178,24 @@ public class ImageButton extends JPanel {
         gui.setBackground(Main.CLEAR);
         gui.clearRect(0, 0, width, height);
         int backgroundColorMode = Main.THEME.getValue("backgroundColorMode");
+        GradientPaint gp = null;
             switch (BackgroundColorMode.values()[backgroundColorMode]) {
             case SOLID:
                 gui.setColor(backgroundColors[backgroundColorIndex]);
                 break;
             case VERTICAL_GRADIENT:
+                gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], 0, height, backgroundColors_2[backgroundColorIndex]);
+                gui.setPaint(gp);
                 break;
             case HORIZONTAL_GRADIENT:
+                gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], buttonWidth, 0, backgroundColors_2[backgroundColorIndex]);
+                gui.setPaint(gp);
                 break;
             case HORIZONTAL_BANDS:
                 gui.setColor(backgroundColors[backgroundColorIndex]);
                 break;
             case HORIZONTAL_BANDED_GRADIENT:
-                GradientPaint gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex],buttonWidth, 0, backgroundColors_2[backgroundColorIndex]);
+                gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], buttonWidth, 0, backgroundColors_2[backgroundColorIndex]);
                 gui.setPaint(gp);
                 break;
             }
@@ -222,7 +211,6 @@ public class ImageButton extends JPanel {
         setLayout(new MigLayout("wrap 1, insets 0",
                 "[fill," + width + "]",
                 "[fill," + height + "]"));
-        indentCurrent = indent;
         label = new JLabel(text);
         label.setFont(font);
         label.setForeground(fontColorInitial);
@@ -251,6 +239,7 @@ public class ImageButton extends JPanel {
         imageBound = Main.THEME.getValue("imageBound");
         width = Math.max(buttonWidth, imageBound);
         height = Main.THEME.getValue(buttonType + "Height");
+        buttonRect = new Rectangle(buttonWidth, height);
         textIndentInitial = Main.THEME.getValue(buttonType + "TextIndent_i");
         textIndentFinal = Main.THEME.getValue(buttonType + "TextIndent_f");
         textIndentSteps = Main.THEME.getValue(buttonType + "TextIndentSteps");
@@ -284,6 +273,8 @@ public class ImageButton extends JPanel {
         font = Main.THEME.getFont(categoryNumber, buttonType);
         Color backgroundColorInitial = null;
         Color backgroundColorFinal = null;
+        Color backgroundColorInitialGradientEnd = null;
+        Color backgroundColorFinalGradientEnd = null;
         int backgroundColorMode = Main.THEME.getValue("backgroundColorMode");
         if (buttonType.equals("button")) {
             switch (BackgroundColorMode.values()[backgroundColorMode]) {
@@ -292,8 +283,18 @@ public class ImageButton extends JPanel {
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");  
                 break;
             case VERTICAL_GRADIENT:
+                backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
+                backgroundColorFinal = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber];
+                backgroundColorInitialGradientEnd = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber + 1];
+                backgroundColorFinalGradientEnd = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber + 1];
+                backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_GRADIENT:
+                backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientStart");
+                backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
+                backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
+                backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDS:
                 backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
@@ -302,9 +303,9 @@ public class ImageButton extends JPanel {
             case HORIZONTAL_BANDED_GRADIENT:
                 backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
                 backgroundColorFinal = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber];
-                Color backgroundColorInitialEndPoint = category.getColorArray(buttonType + "BackgroundColorsInitialEndPoint")[buttonNumber];
-                Color backgroundColorFinalEndPoint = category.getColorArray(buttonType + "BackgroundColorsFinalEndPoint")[buttonNumber];
-                backgroundColors_2 = Utility.getGradient(backgroundColorInitialEndPoint, backgroundColorFinalEndPoint, backgroundColorFadeSteps);
+                backgroundColorInitialGradientEnd = category.getColorArray(buttonType + "BackgroundColorsInitialEndPoint")[buttonNumber];
+                backgroundColorFinalGradientEnd = category.getColorArray(buttonType + "BackgroundColorsFinalEndPoint")[buttonNumber];
+                backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             }
         } else if (buttonType.equals("header")) {
@@ -314,8 +315,12 @@ public class ImageButton extends JPanel {
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
                 break;
             case VERTICAL_GRADIENT:
-                break;
             case HORIZONTAL_GRADIENT:
+                backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientStart");
+                backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
+                backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
+                backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDS:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
@@ -324,8 +329,8 @@ public class ImageButton extends JPanel {
             case HORIZONTAL_BANDED_GRADIENT:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientStart");
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
-                Color backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
-                Color backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
+                backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             }
@@ -345,36 +350,38 @@ public class ImageButton extends JPanel {
         textIndents[textIndents.length - 1] = textIndentFinal;
     }
     
-    protected void loadColors() {
-        
-    }
-    
     /**
      * <p>BaseButtonMouseAdapter.</p>
      * @author Stephen Cheng
      * @version 1.0
      */
-    private class BaseButtonMouseAdapter extends MouseAdapter {
+    protected abstract class BaseButtonMouseAdapter extends MouseAdapter {
         
         @Override
         public void mouseEntered(MouseEvent e) {
-            unindentTimer.stop();
-            indentTimer.start();
-            backgroundColorStepDownTimer.stop();
-            backgroundColorStepUpTimer.start();
-            fontColorStepDownTimer.stop();
-            fontColorStepUpTimer.start();
+            Point mouse = e.getPoint();
+            boolean isHovered = buttonRect.contains(mouse);
+            if (isHovered) {
+                mouseEnteredTimers();
+            }
         }
 
         @Override
         public void mouseExited(MouseEvent e) {
-            indentTimer.stop();
-            unindentTimer.start();
-            backgroundColorStepUpTimer.stop();
-            backgroundColorStepDownTimer.start();
-            fontColorStepUpTimer.stop();
-            fontColorStepDownTimer.start();
+            mouseExitedTimers();
         }
+        
+        @Override
+        public void mouseMoved(MouseEvent e) {
+            Point mouse = e.getPoint();
+            boolean isHovered = buttonRect.contains(mouse);
+            if (isHovered) {
+                mouseEnteredTimers();
+            } else {
+                mouseExitedTimers();
+            }
+        }
+        
     }
     
     /**
@@ -387,23 +394,10 @@ public class ImageButton extends JPanel {
         @Override
         public void mouseReleased(MouseEvent e) {
             if (SwingUtilities.isLeftMouseButton(e)) {
-                try {
-                    run();
-                    return;
-                } catch (IOException e1) {
-                    e1.printStackTrace();
-                }
-                try {
-                    uri();
-                    return;
-                } catch (URISyntaxException | IOException e1) {
-                    e1.printStackTrace();
-                }
-                try {
-                    open();
-                    return;
-                } catch (IOException e1) {
-                    e1.printStackTrace();
+                Point mouse = e.getPoint();
+                boolean isHovered = buttonRect.contains(mouse);
+                if (isHovered) {
+                    launch();
                 }
             }
         }
@@ -448,6 +442,27 @@ public class ImageButton extends JPanel {
             System.out.println(action);
         }
         desktop.open(new File(action));
+    }
+    
+    public void launch() {
+        try {
+            run();
+            return;
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            uri();
+            return;
+        } catch (URISyntaxException | IOException e1) {
+            e1.printStackTrace();
+        }
+        try {
+            open();
+            return;
+        } catch (IOException e1) {
+            e1.printStackTrace();
+        }
     }
     
     private void repositionText() {
@@ -556,6 +571,28 @@ public class ImageButton extends JPanel {
     
     public void setBackgroundColorArray(Color[] colors) {
         this.backgroundColors = colors;
+    }
+    
+    public void mouseEnteredTimers() {
+        unindentTimer.stop();
+        indentTimer.start();
+        backgroundColorStepDownTimer.stop();
+        backgroundColorStepUpTimer.start();
+        fontColorStepDownTimer.stop();
+        fontColorStepUpTimer.start();
+    }
+    
+    public void mouseExitedTimers() {
+        indentTimer.stop();
+        unindentTimer.start();
+        backgroundColorStepUpTimer.stop();
+        backgroundColorStepDownTimer.start();
+        fontColorStepUpTimer.stop();
+        fontColorStepDownTimer.start();
+    }
+    
+    public int getButtonNumber() {
+        return buttonNumber;
     }
     
     /**

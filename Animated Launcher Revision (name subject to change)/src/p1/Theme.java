@@ -208,9 +208,7 @@ public class Theme {
             case SOLID:
                 break;
             case VERTICAL_GRADIENT:
-                break;
             case HORIZONTAL_GRADIENT:
-                break;
             case HORIZONTAL_BANDS:
                 colorMap.put("Category" + i + "headerBackgroundColor_i_gradientStart", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientStart")));
                 colorMap.put("Category" + i + "headerBackgroundColor_i_gradientEnd", createColorARGB(sections[i].get("headerBackgroundColor_i_gradientEnd")));

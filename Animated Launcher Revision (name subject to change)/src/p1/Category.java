@@ -4,7 +4,10 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -81,6 +84,7 @@ public class Category extends JPanel {
     public Color[] buttonBackgroundColorsInitialEndPoint;
     public Color[] buttonBackgroundColorsFinalEndPoint;
     private Map<String, Color[]> colorMap;
+    private ImageButton[] buttons;
     /**
      * <p>main</p>
      * Main object that is used to invoke methods.
@@ -110,6 +114,14 @@ public class Category extends JPanel {
         case SOLID:
             break;
         case VERTICAL_GRADIENT:
+            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+                    numberOfButtons + 1);
+            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+                    numberOfButtons + 1);
+            colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
+            colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
             break;
         case HORIZONTAL_GRADIENT:
             break;
@@ -149,9 +161,13 @@ public class Category extends JPanel {
                 "[grow, fill," + Main.HEADER_WIDTH + "]",
                 "[grow, fill," + Main.BUTTON_HEIGHT + "]" + Main.BUTTON_SPACING + "[grow, fill," + Main.BUTTON_HEIGHT + "]"));
         buttonPanel.setBackground(Main.CLEAR);
+//        ButtonMouseAdapter adapter = new ButtonMouseAdapter();
+        buttons = new ImageButton[numberOfButtons];
         for (int i = 0; i < numberOfButtons; i++) {
-            ImageButton button = new ImageButton(category, i, this);
-            buttonPanel.add(button);
+            buttons[i] = new ImageButton(category, i, this);
+//            buttons[i].addMouseListener(adapter);
+//            buttons[i].addMouseMotionListener(adapter);
+            buttonPanel.add(buttons[i]);
         }
         header.setCategory(this);
         add(buttonPanel);
@@ -165,6 +181,26 @@ public class Category extends JPanel {
         }
 
     }
+    
+//    private class ButtonMouseAdapter extends MouseAdapter {
+//        
+//        @Override
+//        public void mouseReleased(MouseEvent e) {
+//            int buttonNumber = ((ImageButton) e.getSource()).getButtonNumber();
+//            buttons[buttonNumber].launch();
+//        }
+//        
+//        @Override
+//        public void mouseEntered(MouseEvent e) {
+//            ((ImageButton) e.getSource()).mouseEnteredTimers();
+//        }
+//        
+//        @Override
+//        public void mouseExited(MouseEvent e) {
+//            ((ImageButton) e.getSource()).mouseExitedTimers();
+//        }
+//        
+//    }
     
     @Override
     public void paintComponent(Graphics g) {
