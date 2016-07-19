@@ -1,8 +1,25 @@
 package p1;
 
 import java.awt.Color;
+import java.awt.GradientPaint;
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 
 public class Utility {
+    
+    public static BufferedImage calculateFourWayGradient(int width, int height, Color upperLeft, Color upperRight, Color lowerLeft, Color lowerRight) {
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+        Graphics2D g2d = image.createGraphics();
+        Color[] leftColors = getGradient(upperLeft, lowerLeft, height);
+        Color[] rightColors = getGradient(upperRight, lowerRight, height);
+        for (int y = 0; y < leftColors.length; y++) {
+            GradientPaint gp = new GradientPaint(0, 1, leftColors[y], width, 1, rightColors[y]);
+            g2d.setPaint(gp);
+            g2d.fillRect(0, y, width, 1);
+        }
+        g2d.dispose();
+        return image;
+    }
     
     public static Color[] getGradient(Color color_i, Color color_f, int numberOfColors) {
         Color[] colors = new Color[numberOfColors];

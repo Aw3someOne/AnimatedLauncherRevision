@@ -75,14 +75,14 @@ public class Category extends JPanel {
      */
     private boolean isExpanded = true;
     private int backgroundColorMode;
-    public Color[] headerBackgroundColorsInitial;
-    public Color[] headerBackgroundColorsFinal;
-    public Color[] headerBackgroundColorsInitialEndPoint;
-    public Color[] headerBackgroundColorsFinalEndPoint;
-    public Color[] buttonBackgroundColorsInitial;
-    public Color[] buttonBackgroundColorsFinal;
-    public Color[] buttonBackgroundColorsInitialEndPoint;
-    public Color[] buttonBackgroundColorsFinalEndPoint;
+    private Color[] headerBackgroundColorsInitial;
+    private Color[] headerBackgroundColorsFinal;
+    private Color[] headerBackgroundColorsInitialEndPoint;
+    private Color[] headerBackgroundColorsFinalEndPoint;
+    private Color[] buttonBackgroundColorsInitial;
+    private Color[] buttonBackgroundColorsFinal;
+    private Color[] buttonBackgroundColorsInitialEndPoint;
+    private Color[] buttonBackgroundColorsFinalEndPoint;
     private Map<String, Color[]> colorMap;
     private ImageButton[] buttons;
     /**
@@ -90,6 +90,10 @@ public class Category extends JPanel {
      * Main object that is used to invoke methods.
      */
     private Main main;
+    private Color[] buttonBackgroundColorsLeftInitial;
+    private Color[] buttonBackgroundColorsLeftFinal;
+    private Color[] buttonBackgroundColorsRightInitial;
+    private Color[] buttonBackgroundColorsRightFinal;
     
     /**
      * <p>Category</p>
@@ -152,6 +156,24 @@ public class Category extends JPanel {
             colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
             colorMap.put("buttonBackgroundColorsInitialEndPoint", buttonBackgroundColorsInitialEndPoint);
             colorMap.put("buttonBackgroundColorsFinalEndPoint", buttonBackgroundColorsFinalEndPoint);
+            break;
+        case FOUR_WAY_GRADIENT:
+            buttonBackgroundColorsLeftInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperLeftInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerLeftInitial"),
+                    numberOfButtons + 1);
+            buttonBackgroundColorsLeftFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperLeftFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerLeftFinal"),
+                    numberOfButtons + 1);
+            buttonBackgroundColorsRightInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperRightInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerRightInitial"),
+                    numberOfButtons + 1);
+            buttonBackgroundColorsRightFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperRightFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerRightFinal"),
+                    numberOfButtons + 1);
+            colorMap.put("buttonBackgroundColorsLeftInitial", buttonBackgroundColorsLeftInitial);
+            colorMap.put("buttonBackgroundColorsLeftFinal", buttonBackgroundColorsLeftFinal);
+            colorMap.put("buttonBackgroundColorsRightInitial", buttonBackgroundColorsRightInitial);
+            colorMap.put("buttonBackgroundColorsRightFinal", buttonBackgroundColorsRightFinal);
             break;
         }
         

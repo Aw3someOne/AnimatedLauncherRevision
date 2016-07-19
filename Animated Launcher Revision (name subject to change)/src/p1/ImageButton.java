@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +84,10 @@ public class ImageButton extends JPanel {
      */
     private Color[] backgroundColors_2;
     /**
+     * <p>backgroundColorImages</p>
+     */
+    private BufferedImage[] backgroundColorImages;
+    /**
      * <p>backgroundColorIndex</p>
      * Uses to step through the background color array.
      */
@@ -139,6 +144,10 @@ public class ImageButton extends JPanel {
     private Timer fontColorStepDownTimer;
     private Category category;
     protected Rectangle buttonRect;
+    private Color[] upperLeft;
+    private Color[] lowerLeft;
+    private Color[] upperRight;
+    private Color[] lowerRight;
     
     /**
      * <p>ImageButton</p>
@@ -182,24 +191,31 @@ public class ImageButton extends JPanel {
             switch (BackgroundColorMode.values()[backgroundColorMode]) {
             case SOLID:
                 gui.setColor(backgroundColors[backgroundColorIndex]);
+                gui.fillRect(0, 0, buttonWidth, height);
                 break;
             case VERTICAL_GRADIENT:
                 gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], 0, height, backgroundColors_2[backgroundColorIndex]);
                 gui.setPaint(gp);
+                gui.fillRect(0, 0, buttonWidth, height);
                 break;
             case HORIZONTAL_GRADIENT:
                 gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], buttonWidth, 0, backgroundColors_2[backgroundColorIndex]);
                 gui.setPaint(gp);
+                gui.fillRect(0, 0, buttonWidth, height);
                 break;
             case HORIZONTAL_BANDS:
                 gui.setColor(backgroundColors[backgroundColorIndex]);
+                gui.fillRect(0, 0, buttonWidth, height);
                 break;
             case HORIZONTAL_BANDED_GRADIENT:
                 gp = new GradientPaint(0, 0, backgroundColors[backgroundColorIndex], buttonWidth, 0, backgroundColors_2[backgroundColorIndex]);
                 gui.setPaint(gp);
+                gui.fillRect(0, 0, buttonWidth, height);
                 break;
+            case FOUR_WAY_GRADIENT:
+                gui.drawImage(backgroundColorImages[backgroundColorIndex], 0, 0, null);
+//                gui.drawImage(Utility.calculateFourWayGradient(buttonWidth, height, upperLeft[backgroundColorIndex], upperRight[backgroundColorIndex], lowerLeft[backgroundColorIndex], lowerRight[backgroundColorIndex]), 0, 0, null);
             }
-        gui.fillRect(0, 0, buttonWidth, height);
         gui.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
     }
     
@@ -280,13 +296,15 @@ public class ImageButton extends JPanel {
             switch (BackgroundColorMode.values()[backgroundColorMode]) {
             case SOLID:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
-                backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");  
+                backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 break;
             case VERTICAL_GRADIENT:
                 backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
                 backgroundColorFinal = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber];
                 backgroundColorInitialGradientEnd = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber + 1];
                 backgroundColorFinalGradientEnd = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber + 1];
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_GRADIENT:
@@ -294,18 +312,39 @@ public class ImageButton extends JPanel {
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
                 backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
                 backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDS:
                 backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
                 backgroundColorFinal = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber];
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDED_GRADIENT:
                 backgroundColorInitial = category.getColorArray(buttonType + "BackgroundColorsInitial")[buttonNumber];
                 backgroundColorFinal = category.getColorArray(buttonType + "BackgroundColorsFinal")[buttonNumber];
                 backgroundColorInitialGradientEnd = category.getColorArray(buttonType + "BackgroundColorsInitialEndPoint")[buttonNumber];
                 backgroundColorFinalGradientEnd = category.getColorArray(buttonType + "BackgroundColorsFinalEndPoint")[buttonNumber];
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
+                break;
+            case FOUR_WAY_GRADIENT:
+                backgroundColorImages = new BufferedImage[backgroundColorFadeSteps];
+                upperLeft = Utility.getGradient(category.getColorArray(buttonType + "BackgroundColorsLeftInitial")[buttonNumber],
+                        category.getColorArray(buttonType + "BackgroundColorsLeftFinal")[buttonNumber],
+                        backgroundColorFadeSteps);
+                lowerLeft = Utility.getGradient(category.getColorArray(buttonType + "BackgroundColorsLeftInitial")[buttonNumber + 1],
+                        category.getColorArray(buttonType + "BackgroundColorsLeftFinal")[buttonNumber + 1],
+                        backgroundColorFadeSteps);
+                upperRight = Utility.getGradient(category.getColorArray(buttonType + "BackgroundColorsRightInitial")[buttonNumber],
+                        category.getColorArray(buttonType + "BackgroundColorsRightFinal")[buttonNumber],
+                        backgroundColorFadeSteps);
+                lowerRight = Utility.getGradient(category.getColorArray(buttonType + "BackgroundColorsRightInitial")[buttonNumber + 1],
+                        category.getColorArray(buttonType + "BackgroundColorsRightFinal")[buttonNumber + 1],
+                        backgroundColorFadeSteps);
+                for (int i = 0; i < backgroundColorImages.length; i++) {
+                    backgroundColorImages[i] = Utility.calculateFourWayGradient(buttonWidth, height, upperLeft[i], upperRight[i], lowerLeft[i], lowerRight[i]);
+                }
                 break;
             }
         } else if (buttonType.equals("header")) {
@@ -313,6 +352,7 @@ public class ImageButton extends JPanel {
             case SOLID:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 break;
             case VERTICAL_GRADIENT:
             case HORIZONTAL_GRADIENT:
@@ -320,23 +360,39 @@ public class ImageButton extends JPanel {
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
                 backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
                 backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDS:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i");
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 break;
             case HORIZONTAL_BANDED_GRADIENT:
                 backgroundColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientStart");
                 backgroundColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientStart");
                 backgroundColorInitialGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_i_gradientEnd");
                 backgroundColorFinalGradientEnd = Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColor_f_gradientEnd");
+                backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
                 backgroundColors_2 = Utility.getGradient(backgroundColorInitialGradientEnd, backgroundColorFinalGradientEnd, backgroundColorFadeSteps);
+                break;
+            case FOUR_WAY_GRADIENT:
+//                TODO make it read off ini
+                upperLeft = Utility.getGradient(Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorUpperLeftInitial"),
+                        Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorUpperLeftFinal"), backgroundColorFadeSteps);
+                lowerLeft = Utility.getGradient(Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorLowerLeftInitial"),
+                        Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorLowerLeftFinal"), backgroundColorFadeSteps);
+                upperRight = Utility.getGradient(Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorUpperRightInitial"),
+                        Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorUpperRightFinal"), backgroundColorFadeSteps);
+                lowerRight = Utility.getGradient(Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorLowerRightInitial"),
+                        Main.THEME.getColor(categoryNumber, buttonType, "BackgroundColorLowerRightFinal"), backgroundColorFadeSteps);
+                backgroundColorImages = new BufferedImage[backgroundColorFadeSteps];
+                for (int i = 0; i < backgroundColorImages.length; i++) {
+                    backgroundColorImages[i] = Utility.calculateFourWayGradient(buttonWidth, height, upperLeft[i], lowerLeft[i], upperRight[i], lowerRight[i]);
+                }
                 break;
             }
         }
-        
-        backgroundColors = Utility.getGradient(backgroundColorInitial, backgroundColorFinal, backgroundColorFadeSteps);
         
         fontColorInitial = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_i");
         fontColorFinal = Main.THEME.getColor(categoryNumber, buttonType, "FontColor_f");
@@ -519,7 +575,7 @@ public class ImageButton extends JPanel {
     private class BackgroundColorStepUpTimerListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            if (backgroundColorIndex != backgroundColors.length - 1) {
+            if (backgroundColorIndex != backgroundColorFadeSteps - 1) {
                 backgroundColorIndex++;
                 repaint();
             } else {

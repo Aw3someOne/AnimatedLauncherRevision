@@ -44,7 +44,8 @@ public class Theme {
         VERTICAL_GRADIENT,
         HORIZONTAL_GRADIENT,
         HORIZONTAL_BANDS,
-        HORIZONTAL_BANDED_GRADIENT;
+        HORIZONTAL_BANDED_GRADIENT,
+        FOUR_WAY_GRADIENT;
     }
     
     /**
@@ -232,6 +233,24 @@ public class Theme {
                 colorMap.put("Category" + i + "buttonBackgroundColor_i_gradientEnd_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_i_gradientEnd_endPoint")));
                 colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientStart_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientStart_endPoint")));
                 colorMap.put("Category" + i + "buttonBackgroundColor_f_gradientEnd_endPoint", createColorARGB(sections[i].get("buttonBackgroundColor_f_gradientEnd_endPoint")));
+                break;
+            case FOUR_WAY_GRADIENT:
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftInitial", createColorARGB(sections[i].get("headerBackgroundColorUpperLeftInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftInitial", createColorARGB(sections[i].get("headerBackgroundColorLowerLeftInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperRightInitial", createColorARGB(sections[i].get("headerBackgroundColorUpperRightInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerRightInitial", createColorARGB(sections[i].get("headerBackgroundColorLowerRightInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftFinal", createColorARGB(sections[i].get("headerBackgroundColorUpperLeftFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftFinal", createColorARGB(sections[i].get("headerBackgroundColorLowerLeftFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperRightFinal", createColorARGB(sections[i].get("headerBackgroundColorUpperRightFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerRightFinal", createColorARGB(sections[i].get("headerBackgroundColorLowerRightFinal")));
                 break;
             }
             fontMap.put("clockFont", createFont(clock.get("clockFontFace"), Font.PLAIN, Integer.parseInt(clock.get("clockFontSize"))));
