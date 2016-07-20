@@ -118,11 +118,11 @@ public class Category extends JPanel {
         case SOLID:
             break;
         case VERTICAL_GRADIENT:
-            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientStartInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientEndInitial"),
                     numberOfButtons + 1);
-            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientStartFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientEndFinal"),
                     numberOfButtons + 1);
             colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
             colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
@@ -130,32 +130,32 @@ public class Category extends JPanel {
         case HORIZONTAL_GRADIENT:
             break;
         case HORIZONTAL_BANDS:
-            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientStartInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientEndInitial"),
                     numberOfButtons);
-            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientStartFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorGradientEndFinal"),
                     numberOfButtons);
             colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
             colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
             break;
         case HORIZONTAL_BANDED_GRADIENT:
-            buttonBackgroundColorsInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd"),
+            buttonBackgroundColorsLeftInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperLeftInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerLeftInitial"),
                     numberOfButtons);
-            buttonBackgroundColorsFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd"),
+            buttonBackgroundColorsLeftFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperLeftFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerLeftFinal"),
                     numberOfButtons);
-            buttonBackgroundColorsInitialEndPoint = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientStart_endPoint"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_i_gradientEnd_endPoint"),
+            buttonBackgroundColorsRightInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperRightInitial"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerRightInitial"),
                     numberOfButtons);
-            buttonBackgroundColorsFinalEndPoint = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientStart_endPoint"),
-                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColor_f_gradientEnd_endPoint"),
+            buttonBackgroundColorsRightFinal = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperRightFinal"),
+                    Main.THEME.getColor(categoryNumber, "button", "BackgroundColorLowerRightFinal"),
                     numberOfButtons);
-            colorMap.put("buttonBackgroundColorsInitial", buttonBackgroundColorsInitial);
-            colorMap.put("buttonBackgroundColorsFinal", buttonBackgroundColorsFinal);
-            colorMap.put("buttonBackgroundColorsInitialEndPoint", buttonBackgroundColorsInitialEndPoint);
-            colorMap.put("buttonBackgroundColorsFinalEndPoint", buttonBackgroundColorsFinalEndPoint);
+            colorMap.put("buttonBackgroundColorsLeftInitial", buttonBackgroundColorsLeftInitial);
+            colorMap.put("buttonBackgroundColorsLeftFinal", buttonBackgroundColorsLeftFinal);
+            colorMap.put("buttonBackgroundColorsRightInitial", buttonBackgroundColorsRightInitial);
+            colorMap.put("buttonBackgroundColorsRightFinal", buttonBackgroundColorsRightFinal);
             break;
         case FOUR_WAY_GRADIENT:
             buttonBackgroundColorsLeftInitial = Utility.getGradient(Main.THEME.getColor(categoryNumber, "button", "BackgroundColorUpperLeftInitial"),
