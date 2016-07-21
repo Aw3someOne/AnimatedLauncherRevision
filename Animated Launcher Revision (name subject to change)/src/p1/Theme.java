@@ -159,10 +159,6 @@ public class Theme {
         valueMap.put("expandDuration", Integer.parseInt(system.get("expandDuration")));
         valueMap.put("winX", Integer.parseInt(system.get("winX")));
         valueMap.put("winY", Integer.parseInt(system.get("winY")));
-        valueMap.put("Category0ForegroundImageXOffset", Integer.parseInt(sections[0].get("ForegroundImageXOffset")));
-        valueMap.put("Category1ForegroundImageXOffset", Integer.parseInt(sections[1].get("ForegroundImageXOffset")));
-        valueMap.put("Category2ForegroundImageXOffset", Integer.parseInt(sections[2].get("ForegroundImageXOffset")));
-        
         valueMap.put("clockWinX", Integer.parseInt(clock.get("winX")));
         valueMap.put("clockWinY", Integer.parseInt(clock.get("winY")));
         BufferedImage[] foregroundImages = new BufferedImage[numberOfCategories];
@@ -194,6 +190,12 @@ public class Theme {
         for (int i = 0; i < numberOfCategories; i++) {
             buttonFonts[i] = createFont(sections[i].get("buttonFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("buttonFontSize")));
             headerFonts[i] = createFont(sections[i].get("headerFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("headerFontSize")));
+            int xCrop = Integer.parseInt(sections[i].get("ForegroundImageXCrop"));
+            int yCrop = Integer.parseInt(sections[i].get("ForegroundImageYCrop"));
+            int xOffset = Integer.parseInt(sections[i].get("ForegroundImageXOffset"));
+            int yOffset = Integer.parseInt(sections[i].get("ForegroundImageYOffset"));
+            foregroundImages[i] = foregroundImages[i].getSubimage(xCrop, yCrop, foregroundImages[i].getWidth() - xCrop, foregroundImages[i].getHeight() - yCrop);
+            foregroundImages[i] = Utility.offsetImage(foregroundImages[i], xOffset, yOffset);
             imageMap.put(i, foregroundImages[i]);
             fontMap.put("Category" + i + "button", buttonFonts[i]);
             fontMap.put("Category" + i + "header", headerFonts[i]);

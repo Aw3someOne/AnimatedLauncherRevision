@@ -97,15 +97,6 @@ public class ImageButton extends JPanel {
      * Image that is displayed over the background color.
      */
     private BufferedImage foregroundImage;
-    /**
-     * <p>foregroundImageXOffset</p>
-     * Distance from left edge of button to display image.
-     */
-    private int foregroundImageXOffset;
-    private int foregroundImageYOffset;
-    private int foregroundImageXCrop;
-    private int foregroundImageYCrop;
-    
     private JLabel label;
     private JLabel shadow;
     
@@ -216,7 +207,7 @@ public class ImageButton extends JPanel {
                 gui.drawImage(backgroundColorImages[backgroundColorIndex], 0, 0, null);
 //                gui.drawImage(Utility.calculateFourWayGradient(buttonWidth, height, upperLeft[backgroundColorIndex], upperRight[backgroundColorIndex], lowerLeft[backgroundColorIndex], lowerRight[backgroundColorIndex]), 0, 0, null);
             }
-        gui.drawImage(foregroundImage, foregroundImageXOffset, 0, this);
+        gui.drawImage(foregroundImage, 0, 0, this);
     }
     
     /**
@@ -274,12 +265,8 @@ public class ImageButton extends JPanel {
         if (buttonType.equals("button")) {
             action = section.get("button" + buttonNumber + "Action");
             foregroundImage = Main.THEME.getImage(categoryNumber);
-            foregroundImageXOffset = Main.THEME.getValue("Category" + categoryNumber + "ForegroundImageXOffset");
-            foregroundImageYOffset = Integer.parseInt(section.get("ForegroundImageYOffset"));
-            foregroundImageXCrop = Integer.parseInt(section.get("ForegroundImageXCrop"));
-            foregroundImageYCrop = Integer.parseInt(section.get("ForegroundImageYCrop"));
             try {
-                foregroundImage = foregroundImage.getSubimage(foregroundImageXCrop, foregroundImageYCrop + (height * buttonNumber), Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
+                foregroundImage = foregroundImage.getSubimage(0, height * buttonNumber, Math.min(width, foregroundImage.getWidth()), Math.min(height, foregroundImage.getHeight()));
             } catch (Exception e) {
                 e.printStackTrace();
             }

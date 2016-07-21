@@ -7,6 +7,15 @@ import java.awt.image.BufferedImage;
 
 public class Utility {
     
+    public static BufferedImage offsetImage(BufferedImage image, int x, int y) {
+        int width = image.getWidth();
+        int height = image.getHeight();
+        int[] rgbArray = image.getRGB(0, 0, width, height, null, 0, width);
+        BufferedImage offset = new BufferedImage(width + x, height + y, BufferedImage.TYPE_INT_ARGB);
+        offset.setRGB(x, y, width, height, rgbArray, 0, width);
+        return offset;
+    }
+    
     public static BufferedImage calculateFourWayGradient(int width, int height, Color upperLeft, Color upperRight, Color lowerLeft, Color lowerRight) {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         Graphics2D g2d = image.createGraphics();
