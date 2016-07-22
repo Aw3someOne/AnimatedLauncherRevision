@@ -49,10 +49,6 @@ public class Theme {
     }
     
     /**
-     * <p>GE.</p>
-     */
-    private static final GraphicsEnvironment GE = GraphicsEnvironment.getLocalGraphicsEnvironment();
-    /**
      * <p>valueMap</p>
      * Holds all the variables from ini file.
      */
@@ -159,8 +155,6 @@ public class Theme {
         valueMap.put("expandDuration", Integer.parseInt(system.get("expandDuration")));
         valueMap.put("winX", Integer.parseInt(system.get("winX")));
         valueMap.put("winY", Integer.parseInt(system.get("winY")));
-        valueMap.put("clockWinX", Integer.parseInt(clock.get("winX")));
-        valueMap.put("clockWinY", Integer.parseInt(clock.get("winY")));
         BufferedImage[] foregroundImages = new BufferedImage[numberOfCategories];
         Font[] buttonFonts = new Font[numberOfCategories];
         Font[] headerFonts = new Font[numberOfCategories];
@@ -188,8 +182,8 @@ public class Theme {
             }
         }
         for (int i = 0; i < numberOfCategories; i++) {
-            buttonFonts[i] = createFont(sections[i].get("buttonFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("buttonFontSize")));
-            headerFonts[i] = createFont(sections[i].get("headerFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("headerFontSize")));
+            buttonFonts[i] = Utility.createFont(sections[i].get("buttonFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("buttonFontSize")));
+            headerFonts[i] = Utility.createFont(sections[i].get("headerFontFace"), Font.PLAIN, Integer.parseInt(sections[i].get("headerFontSize")));
             int xCrop = Integer.parseInt(sections[i].get("ForegroundImageXCrop"));
             int yCrop = Integer.parseInt(sections[i].get("ForegroundImageYCrop"));
             int xOffset = Integer.parseInt(sections[i].get("ForegroundImageXOffset"));
@@ -199,67 +193,73 @@ public class Theme {
             imageMap.put(i, foregroundImages[i]);
             fontMap.put("Category" + i + "button", buttonFonts[i]);
             fontMap.put("Category" + i + "header", headerFonts[i]);
-            colorMap.put("Category" + i + "headerBackgroundColor_i", createColorARGB(sections[i].get("headerBackgroundColor_i")));
-            colorMap.put("Category" + i + "headerBackgroundColor_f", createColorARGB(sections[i].get("headerBackgroundColor_f")));
-            colorMap.put("Category" + i + "buttonBackgroundColor_i", createColorARGB(sections[i].get("buttonBackgroundColor_i")));
-            colorMap.put("Category" + i + "buttonBackgroundColor_f", createColorARGB(sections[i].get("buttonBackgroundColor_f")));
-            colorMap.put("Category" + i + "headerFontColor_i", createColorARGB(sections[i].get("headerFontColor_i")));
-            colorMap.put("Category" + i + "headerFontColor_f", createColorARGB(sections[i].get("headerFontColor_f")));
-            colorMap.put("Category" + i + "buttonFontColor_i", createColorARGB(sections[i].get("buttonFontColor_i")));
-            colorMap.put("Category" + i + "buttonFontColor_f", createColorARGB(sections[i].get("buttonFontColor_f")));
+            colorMap.put("Category" + i + "headerBackgroundColor_i", Utility.createColorARGB(sections[i].get("headerBackgroundColor_i")));
+            colorMap.put("Category" + i + "headerBackgroundColor_f", Utility.createColorARGB(sections[i].get("headerBackgroundColor_f")));
+            colorMap.put("Category" + i + "buttonBackgroundColor_i", Utility.createColorARGB(sections[i].get("buttonBackgroundColor_i")));
+            colorMap.put("Category" + i + "buttonBackgroundColor_f", Utility.createColorARGB(sections[i].get("buttonBackgroundColor_f")));
+            colorMap.put("Category" + i + "headerFontColor_i", Utility.createColorARGB(sections[i].get("headerFontColor_i")));
+            colorMap.put("Category" + i + "headerFontColor_f", Utility.createColorARGB(sections[i].get("headerFontColor_f")));
+            colorMap.put("Category" + i + "buttonFontColor_i", Utility.createColorARGB(sections[i].get("buttonFontColor_i")));
+            colorMap.put("Category" + i + "buttonFontColor_f", Utility.createColorARGB(sections[i].get("buttonFontColor_f")));
             switch (bgMode) {
             case SOLID:
                 break;
             case VERTICAL_GRADIENT:
             case HORIZONTAL_GRADIENT:
             case HORIZONTAL_BANDS:
-                colorMap.put("Category" + i + "headerBackgroundColorGradientStartInitial", createColorARGB(sections[i].get("headerBackgroundColorGradientStartInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientEndInitial", createColorARGB(sections[i].get("headerBackgroundColorGradientEndInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientStartFinal", createColorARGB(sections[i].get("headerBackgroundColorGradientStartFinal")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientEndFinal", createColorARGB(sections[i].get("headerBackgroundColorGradientEndFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorGradientStartInitial", createColorARGB(sections[i].get("buttonBackgroundColorGradientStartInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorGradientEndInitial", createColorARGB(sections[i].get("buttonBackgroundColorGradientEndInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorGradientStartFinal", createColorARGB(sections[i].get("buttonBackgroundColorGradientStartFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorGradientEndFinal", createColorARGB(sections[i].get("buttonBackgroundColorGradientEndFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientStartInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientStartInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientEndInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientEndInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientStartFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientStartFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientEndFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientEndFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorGradientStartInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorGradientStartInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorGradientEndInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorGradientEndInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorGradientStartFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorGradientStartFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorGradientEndFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorGradientEndFinal")));
                 break;
             case HORIZONTAL_BANDED_GRADIENT:
-                colorMap.put("Category" + i + "headerBackgroundColorGradientStartInitial", createColorARGB(sections[i].get("headerBackgroundColorGradientStartInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientEndInitial", createColorARGB(sections[i].get("headerBackgroundColorGradientEndInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientStartFinal", createColorARGB(sections[i].get("headerBackgroundColorGradientStartFinal")));
-                colorMap.put("Category" + i + "headerBackgroundColorGradientEndFinal", createColorARGB(sections[i].get("headerBackgroundColorGradientEndFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientStartInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientStartInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientEndInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientEndInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientStartFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientStartFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorGradientEndFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorGradientEndFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperRightFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerRightFinal")));
                 break;
             case FOUR_WAY_GRADIENT:
-                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftInitial", createColorARGB(sections[i].get("headerBackgroundColorUpperLeftInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftInitial", createColorARGB(sections[i].get("headerBackgroundColorLowerLeftInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorUpperRightInitial", createColorARGB(sections[i].get("headerBackgroundColorUpperRightInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorLowerRightInitial", createColorARGB(sections[i].get("headerBackgroundColorLowerRightInitial")));
-                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftFinal", createColorARGB(sections[i].get("headerBackgroundColorUpperLeftFinal")));
-                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftFinal", createColorARGB(sections[i].get("headerBackgroundColorLowerLeftFinal")));
-                colorMap.put("Category" + i + "headerBackgroundColorUpperRightFinal", createColorARGB(sections[i].get("headerBackgroundColorUpperRightFinal")));
-                colorMap.put("Category" + i + "headerBackgroundColorLowerRightFinal", createColorARGB(sections[i].get("headerBackgroundColorLowerRightFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightInitial", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightInitial")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorUpperRightFinal")));
-                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightFinal", createColorARGB(sections[i].get("buttonBackgroundColorLowerRightFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorUpperLeftInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorLowerLeftInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperRightInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorUpperRightInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerRightInitial", Utility.createColorARGB(sections[i].get("headerBackgroundColorLowerRightInitial")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperLeftFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorUpperLeftFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerLeftFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorLowerLeftFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorUpperRightFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorUpperRightFinal")));
+                colorMap.put("Category" + i + "headerBackgroundColorLowerRightFinal", Utility.createColorARGB(sections[i].get("headerBackgroundColorLowerRightFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightInitial", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerRightInitial")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperLeftFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerLeftFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerLeftFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorUpperRightFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorUpperRightFinal")));
+                colorMap.put("Category" + i + "buttonBackgroundColorLowerRightFinal", Utility.createColorARGB(sections[i].get("buttonBackgroundColorLowerRightFinal")));
                 break;
             }
-            fontMap.put("clockFont", createFont(clock.get("clockFontFace"), Font.PLAIN, Integer.parseInt(clock.get("clockFontSize"))));
-            fontMap.put("smallFont", createFont(clock.get("smallFontFace"), Font.PLAIN, Integer.parseInt(clock.get("smallFontSize"))));
-            fontMap.put("textFont", createFont(clock.get("textFontFace"), Font.PLAIN, Integer.parseInt(clock.get("textFontSize"))));
-            colorMap.put("clockFontColor", createColorARGB(clock.get("clockFontColor")));
         }
+    }
+    
+    /**
+     * <p>getValue</p>
+     * Gets a value from the value map.
+     * @param key key
+     * @return value
+     */
+    public int getValue(String key) {
+        return valueMap.get(key);
     }
     
     /**
@@ -281,16 +281,6 @@ public class Theme {
      */
     public Font getFont(int categoryNumber, String buttonType) {
         return getFont("Category" + categoryNumber + buttonType);
-    }
-    
-    /**
-     * <p>getValue</p>
-     * Gets a value from the value map.
-     * @param key key
-     * @return value
-     */
-    public int getValue(String key) {
-        return valueMap.get(key);
     }
     
     /**
@@ -323,64 +313,6 @@ public class Theme {
      */
     public BufferedImage getImage(int categoryNumber) {
         return imageMap.get(categoryNumber);
-    }
-
-    /**
-     * <p>createColorARGB</p>
-     * Creates a color from an string formatted in ARGB.
-     * @param color color string
-     * @return color
-     */
-    private static Color createColorARGB(String color) {
-        return createColorARGB(color, true);
-    }
-    
-    /**
-     * <p>createColorARGB</p>
-     * Creates a color from an string formatted in ARGB.
-     * @param color color string
-     * @param hasAlpha alpha
-     * @return color
-     */
-    private static Color createColorARGB(String color, boolean hasAlpha) {
-        int argb = (int) Long.decode(color).longValue();
-        return new Color(argb, hasAlpha);
-    }
-    
-    /**
-     * <p>createColorRGBA</p>
-     * Creates a color from a string formatted in RGBA.
-     * @param color color string
-     * @return color
-     */
-    private static Color createColorRGBA(String color) {
-        int rgba = (int) Long.decode(color).longValue();
-        int r = (rgba & 0xFF000000) >> 24;
-        int g = (rgba & 0x00FF0000) >> 16;
-        int b = (rgba & 0x0000FF00) >> 8;
-        int a = rgba & 0x000000FF;
-        return new Color(r, g, b, a);
-    }
-    
-    /**
-     * <p>createFont</p>
-     * Creates a font.
-     * @param fontpath name of the font or path of the font
-     * @param style font style
-     * @param size font size
-     * @return font
-     */
-    private static Font createFont(String fontpath, int style, int size) {
-        Font font = null;
-        try {
-            InputStream fontStream = Theme.class.getClassLoader().getResourceAsStream(fontpath);
-            font = Font.createFont(Font.TRUETYPE_FONT, fontStream);
-            GE.registerFont(font);
-            font = font.deriveFont(style, size);
-        } catch (FontFormatException | IOException e) {
-            font = new Font(fontpath, style, size);
-        }
-        return font;
     }
     
 }
